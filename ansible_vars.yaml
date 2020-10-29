@@ -1,11 +1,11 @@
 ---
-users:
-  # - name: Harry Lime
-  #   username: harry
-  #   keyfile: "~/.ssh/id_rsa.pub"
-  #   admin: false
-  #   enabled: true
-  -
+# users:
+#   - name: Harry Lime
+#     username: harry
+#     keyfile: "~/.ssh/id_rsa.pub"
+#     admin: false
+#     enabled: true
 
-apt_packages:
-  -
+# apt_packages:
+#   - vim
+#   - git

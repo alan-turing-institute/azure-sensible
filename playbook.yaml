@@ -61,6 +61,7 @@
           loop: "{{ users }}"
           when: item.admin and item.enabled
       become: yes
+      when: users is defined
 
     - name: Allow users in the admin group to sudo without a password
       lineinfile:
@@ -77,3 +78,4 @@
         state: present
         update_cache: yes
       become: yes
+      when: apt_packages is defined
