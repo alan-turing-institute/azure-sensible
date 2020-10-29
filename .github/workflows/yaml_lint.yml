@@ -4,8 +4,8 @@ name: YAML lint
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  yaml_lint:
+    name: 'YAML lint'
     runs-on: ubuntu-latest
 
     steps:
