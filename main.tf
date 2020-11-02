@@ -12,6 +12,14 @@ provider "azurerm" {
   features {}
 }
 
+# Create admin user SSH key
+resource "tls_private_key" "admin" {
+  # algorithm   = "ECDSA"
+  # ecdsa_curve = "P256"
+  algorithm = "RSA"
+  rsa_bits  = "4096"
+}
+
 # Create a resource group
 resource "azurerm_resource_group" "rg" {
   name     = "${var.prefix}RG"
@@ -89,7 +97,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file(var.admin_ssh_public_key)
+    public_key = tls_private_key.admin.public_key_openssh
   }
 
   os_disk {
@@ -116,6 +124,13 @@ output "public_ip_address" {
   value = data.azurerm_public_ip.ip.ip_address
 }
 
+resource "local_file" "admin_private_key" {
+  # filename        = "./admin_id_ecdsa.pem"
+  filename        = "./admin_id_rsa.pem"
+  file_permission = "0600"
+  content         = tls_private_key.admin.private_key_pem
+}
+
 resource "local_file" "ansible_inventory" {
   filename        = "./inventory.yaml"
   file_permission = "0644"
@@ -126,6 +141,6 @@ resource "local_file" "ansible_inventory" {
         vm:
           ansible_host: ${data.azurerm_public_ip.ip.ip_address}
           ansible_user: ${var.admin_username}
-          ansible_ssh_private_key_file: ${var.admin_ssh_private_key}
+          ansible_ssh_private_key_file: ${local_file.admin_private_key.filename}
     DOC
 }

@@ -30,3 +30,6 @@ override.tf.json
 
 # Automatically generated inventory file
 inventory.yaml
+
+# Generated ssh keys
+*.pem

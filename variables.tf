@@ -17,13 +17,3 @@ variable "admin_username" {
   type    = string
   default = "ansible_admin"
 }
-
-variable "admin_ssh_public_key" {
-  type    = string
-  default = "~/.ssh/id_rsa.pub"
-}
-
-variable "admin_ssh_private_key" {
-  type    = string
-  default = "~/.ssh/id_rsa"
-}
