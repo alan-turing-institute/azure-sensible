@@ -6,21 +6,21 @@
   roles:
     - role: oefenweb.fail2ban
       become: yes
+      vars:
+        fail2ban_services:
+          - name: sshd
+            maxretry: 5
+            bantime: 1h
     - role: dev-sec.ssh-hardening
       become: yes
+      vars:
+        ssh_server_password_login: false
+        ssh_permit_root_login: "no"
+        sftp_enabled: true
+        ssh_print_last_log: true
 
   vars_files:
     - ansible_vars.yaml
-
-  vars:
-    fail2ban_services:
-      - name: sshd
-        maxretry: 5
-        bantime: 1h
-    ssh_server_password_login: false
-    ssh_permit_root_login: "no"
-    sftp_enabled: true
-    ssh_print_last_log: true
 
   tasks:
     - name: Wait for cloud init to finish
