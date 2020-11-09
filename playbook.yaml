@@ -8,6 +8,7 @@
 
   vars:
     totp: false
+    docker: false
 
   roles:
     - role: oefenweb.fail2ban
@@ -42,6 +43,9 @@
         sftp_enabled: true
         ssh_print_last_log: true
       when: totp
+    - role: geerlingguy.docker
+      become: yes
+      when: docker
 
   tasks:
     - name: Wait for cloud init to finish
