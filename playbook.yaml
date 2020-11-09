@@ -92,6 +92,7 @@
         line: '%ADMIN ALL=(ALL) NOPASSWD: ALL'
         validate: /usr/sbin/visudo -cf %s
       become: yes
+      when: not totp
 
     - name: Configure TOTP authentication
       block:
