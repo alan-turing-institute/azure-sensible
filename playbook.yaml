@@ -3,6 +3,12 @@
 - name: configure vm
   hosts: vm
 
+  vars_files:
+    - ansible_vars.yaml
+
+  vars:
+    totp: false
+
   roles:
     - role: oefenweb.fail2ban
       become: yes
@@ -16,11 +22,27 @@
       vars:
         ssh_server_password_login: false
         ssh_permit_root_login: "no"
+        ssh_use_pam: false
+        ssh_challengeresponseauthentication: false
+        sshd_authenticationmethods: publickey
+        # ssh_server_match_user: "ssh_options.match_user.{{ authentication }}"
         sftp_enabled: true
         ssh_print_last_log: true
-
-  vars_files:
-    - ansible_vars.yaml
+      when: not totp
+    - role: dev-sec.ssh-hardening
+      become: yes
+      vars:
+        ssh_server_password_login: false
+        ssh_permit_root_login: "no"
+        ssh_use_pam: true
+        ssh_challengeresponseauthentication: true
+        sshd_authenticationmethods: "publickey,keyboard-interactive:pam"
+        ssh_server_match_user:
+          - user: "{{ ansible_user }}"
+            rules: ["AuthenticationMethods publickey"]
+        sftp_enabled: true
+        ssh_print_last_log: true
+      when: totp
 
   tasks:
     - name: Wait for cloud init to finish
@@ -71,6 +93,73 @@
         line: '%ADMIN ALL=(ALL) NOPASSWD: ALL'
         validate: /usr/sbin/visudo -cf %s
       become: yes
+
+    - name: Configure TOTP authentication
+      block:
+        - name: Install PAM OATH packages for TOTP
+          become: yes
+          apt:
+            name:
+              - libpam-oath
+              - oathtool
+            state: present
+
+        - name: Find users with existing TOTP seeds
+          become: yes
+          command: "grep {{ item.username }} /etc/users.oath"
+          loop: "{{ users }}"
+          register: totp_users
+          ignore_errors: yes
+          changed_when: no
+
+        - name: Create TOTP seeds for each user without one
+          become: yes
+          lineinfile:
+            path: /etc/users.oath
+            line: "HOTP/T30/6 {{ item.item.username }} - {{ lookup ('password', '/dev/null chars=hexdigits length=30') }}"
+            create: yes
+            owner: root
+            mode: 0600
+          loop: "{{ totp_users.results }}"
+          when: item.failed
+
+        - name: Enable OATH for SSH login in PAM configuration
+          become: yes
+          lineinfile:
+            path: /etc/pam.d/sshd
+            state: present
+            # can the control flags be replaced by required or requisite?
+            line: 'auth [success=done new_authtok_reqd=done default=die] pam_oath.so usersfile=/etc/users.oath window=30 digits=6'
+            insertbefore: BOF
+            mode: 0644
+
+        - name: Require OATH for sudo
+          become: yes
+          lineinfile:
+            path: /etc/pam.d/sudo
+            state: present
+            # Is nullok required?
+            line: 'auth [success=done new_authtok_reqd=done default=die] pam_oath.so usersfile=/etc/users.oath window=30 digits=6 nullok'
+            insertbefore: BOF
+            mode: 0644
+
+        - name: Register TOTP hashes to a variable
+          become: yes
+          shell: sed -E "s:HOTP/T30/6 (\S+) - ([0-9a-fA-F]{30}).*:\1 \2:g" /etc/users.oath
+          args:
+            warn: false
+          when: users is defined
+          register: totp_hashes
+          changed_when: no
+
+        - name: Write TOTP hashes to file
+          copy:
+            content: "{{ totp_hashes.stdout }}"
+            dest: ./totp_hashes.txt
+            mode: 0644
+          delegate_to: localhost
+          when: users is defined
+      when: totp
 
     - name: Install selected packages
       apt:
