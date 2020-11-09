@@ -33,3 +33,6 @@ inventory.yaml
 
 # Generated ssh keys
 *.pem
+
+# Generated TOTP hashes
+totp_hashes.txt
