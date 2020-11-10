@@ -140,6 +140,8 @@ resource "local_file" "ansible_inventory" {
   content         = <<-DOC
     ---
     all:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
       hosts:
         vm:
           ansible_host: ${data.azurerm_public_ip.ip.ip_address}
