@@ -15,9 +15,9 @@ jobs:
         uses: ibiqlik/action-yamllint@v2.0.0
         with:
           file_or_dir: .
-        config_data: |
-          extends: default
-          rules:
-            line-length:
-              max: 80
-              level: warning
+          config_data: |
+            extends: default
+            rules:
+              line-length:
+                max: 80
+                level: warning
