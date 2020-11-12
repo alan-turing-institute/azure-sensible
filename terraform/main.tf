@@ -128,14 +128,13 @@ output "public_ip_address" {
 }
 
 resource "local_file" "admin_private_key" {
-  # filename        = "./admin_id_ecdsa.pem"
-  filename        = "./admin_id_rsa.pem"
+  filename        = "../ansible/admin_id_rsa.pem"
   file_permission = "0600"
   content         = tls_private_key.admin.private_key_pem
 }
 
 resource "local_file" "ansible_inventory" {
-  filename        = "./inventory.yaml"
+  filename        = "../ansible/inventory.yaml"
   file_permission = "0644"
   content         = <<-DOC
     ---
