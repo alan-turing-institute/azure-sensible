@@ -34,6 +34,36 @@ jobs:
               max: 80
               level: warning
 
+    markdown_lint:
+      name: 'Lint Markdown'
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Setup Ruby
+          uses: actions/setup-ruby@v1
+
+        - name: Install mdl
+          run: gem install mdl
+
+        - name: Lint markdown
+          run: mdl --style .mdlstyle.rb ./
+
+    markdown-link-check:
+      name: 'Markdown link check'
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Check links
+          uses: gaurav-nelson/github-action-markdown-link-check@v1.0.8
+          with:
+            use-verbose-mode: 'yes'
+
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
