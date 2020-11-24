@@ -176,3 +176,7 @@
         state: present
         update_cache: yes
       become: yes
+
+    - name: Print IP address
+      debug:
+        var: ansible_host
