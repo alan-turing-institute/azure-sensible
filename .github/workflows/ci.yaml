@@ -49,7 +49,7 @@ jobs:
         run: gem install mdl
 
       - name: Lint markdown
-        run: mdl --style .mdlstyle.rb ./
+        run: mdl --style .mdl_style.rb ./
 
   markdown-link-check:
     name: 'Markdown link check'
