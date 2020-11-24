@@ -8,6 +8,7 @@
 
   vars:
     users: []
+    apt_packages: []
     totp: false
     docker: false
     docker_users: []
@@ -175,4 +176,3 @@
         state: present
         update_cache: yes
       become: yes
-      when: apt_packages is defined
