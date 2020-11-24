@@ -7,6 +7,7 @@
     - ansible_vars.yaml
 
   vars:
+    users: []
     totp: false
     docker: false
 
@@ -86,7 +87,6 @@
           loop: "{{ users }}"
           when: item.admin and item.enabled
       become: yes
-      when: users is defined
 
     - name: Allow users in the admin group to sudo without a password
       lineinfile:
