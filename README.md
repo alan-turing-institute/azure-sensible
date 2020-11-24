@@ -72,6 +72,7 @@ $ terraform apply
 ```
 
 > :warning: Warning
+>
 > The Terraform plan generates an SSH key for the Ansible admin account. The
 > private key is [stored
 > unencrypted](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key)
