@@ -10,6 +10,7 @@
     users: []
     totp: false
     docker: false
+    docker_users: []
 
   roles:
     - role: oefenweb.fail2ban
@@ -44,9 +45,6 @@
         sftp_enabled: true
         ssh_print_last_log: true
       when: totp
-    - role: geerlingguy.docker
-      become: yes
-      when: docker
 
   tasks:
     - name: Wait for cloud init to finish
@@ -132,7 +130,6 @@
           lineinfile:
             path: /etc/pam.d/sshd
             state: present
-            # can the control flags be replaced by required or requisite?
             line: 'auth [success=done new_authtok_reqd=done default=die] pam_oath.so usersfile=/etc/users.oath window=30 digits=6'
             insertbefore: BOF
             mode: 0644
@@ -142,7 +139,7 @@
           lineinfile:
             path: /etc/pam.d/sudo
             state: present
-            # Is nullok required?
+            # nullok is required for users without TOTP configured, e.g. ansible_user
             line: 'auth [success=done new_authtok_reqd=done default=die] pam_oath.so usersfile=/etc/users.oath window=30 digits=6 nullok'
             insertbefore: BOF
             mode: 0644
@@ -164,6 +161,13 @@
           delegate_to: localhost
           when: users is defined
       when: totp
+
+    # This is run after users are created so that they may be added to the docker group
+    - name: Install and configure docker
+      become: yes
+      import_role:
+        name: geerlingguy.docker
+      when: docker
 
     - name: Install selected packages
       apt:
