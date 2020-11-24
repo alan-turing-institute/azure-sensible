@@ -1,4 +1,12 @@
 ---
+# Users to create
+# Declare each user as a new list item. Each user requires the following keys,
+#   - name: Full name
+#   - username: Linux username (used to login)
+#   - keyfile: Path to the users public ssh key
+#   - admin: if true the account will be a sudoer - enabled: if false the
+#            account will be deactivated (login will not be allowed, but data
+#            will not be deleted)
 # users:
 #   - name: Harry Lime
 #     username: harry
@@ -6,11 +14,16 @@
 #     admin: false
 #     enabled: true
 
+# Ubuntu packages to install. Each package is a list item. You can find all of
+# the available packages at https://packages.ubuntu.com/bionic/
 # apt_packages:
 #   - vim
 #   - git
 
+# Enforce TOTP authentication and create a TOTP hash for every user.
 # totp: true
 
+# Install docker
 # docker: true
+# Users to add to the docker group (required to use commands like `docker run`)
 # docker_users: [harry]
