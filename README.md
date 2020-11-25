@@ -47,6 +47,15 @@ $ az login
 
 which will launch a browser prompting you to login.
 
+Then you will need to enable the subscription you want to deploy the VM into.
+Terraform will use your enabled-by-default subscription.
+
+```
+$ az account set --subscription <Subscription Name or ID>
+```
+
+To see a list of subscriptions available to you, run: `az account list --output table`
+
 Next you can configure your deployment by editing
 [`terraform/terraform.tfvars`](terraform/terraform.tfvars). This file has
 comments explaining the configuration options and their default values.
