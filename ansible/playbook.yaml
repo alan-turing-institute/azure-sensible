@@ -57,16 +57,6 @@
       wait_for:
         path: /var/lib/cloud/instance/boot-finished
 
-    - name: Allow users in the admin group to sudo without a password
-      lineinfile:
-        path: /etc/sudoers
-        state: present
-        regexp: '^%ADMIN ALL='
-        line: '%ADMIN ALL=(ALL) NOPASSWD: ALL'
-        validate: /usr/sbin/visudo -cf %s
-      become: yes
-      when: not totp
-
     - name: Configure TOTP authentication
       block:
         - name: Install PAM OATH packages for TOTP

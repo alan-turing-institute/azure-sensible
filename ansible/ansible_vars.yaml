@@ -3,6 +3,7 @@
 # Declare each user as a new list item. Each user requires the following keys,
 #   - name: Full name
 #   - username: Linux username (used to login)
+#   - password: A password hash for the user (required for sudo). See https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module or use scripts/generate_password.py to create a suitable hash.
 #   - ssh_key: A list of the users public ssh keys as strings (with no newlines)
 #   - groups: A list of groups to add the user to, add users to the "admin"
 #             group to allow them to use sudo
@@ -12,9 +13,10 @@
 # users:
 #   - name: Harry Lime
 #     username: harry
+#     password: "$6$AHWU2/Si7zYj7cuJ$qiBAb03b6BdNM7Zjek1vhmmFlzGRDrIyj2H5Fz2jwx/pshy7XrZFrKc8owUGKwT1lmW3x9zANFdryR4MuDT1I/"
 #     ssh_key:
 #       - "ssh-rsa ..."
-#     groups: ["admin"]
+#     groups: [admin]
 
 # Users to disable or delete
 # Declare each user as a new list item. Each item has the following keys,
