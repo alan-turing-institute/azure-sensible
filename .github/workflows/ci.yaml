@@ -51,7 +51,7 @@ jobs:
       - name: Lint markdown
         run: mdl --style .mdl_style.rb ./
 
-  markdown-link-check:
+  markdown_link_check:
     name: 'Markdown link check'
     runs-on: ubuntu-latest
 
@@ -63,6 +63,23 @@ jobs:
         uses: gaurav-nelson/github-action-markdown-link-check@1.0.8
         with:
           use-verbose-mode: 'yes'
+
+  python_lint:
+    name: "Lint Python"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Lint
+        run: flake8 --count --show-source --statistics
 
   terraform:
     name: 'Terraform'
