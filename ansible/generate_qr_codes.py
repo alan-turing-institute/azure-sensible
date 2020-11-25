@@ -32,7 +32,7 @@ def main():
     # Get the machine name from terraform state
     host_name = re.search(
         r'^\s+"computer_name": "(\S*)",$',
-        open("./terraform.tfstate").read(),
+        open("../terraform/terraform.tfstate").read(),
         re.MULTILINE
     ).group(1)
 
