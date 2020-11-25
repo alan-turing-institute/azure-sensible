@@ -7,7 +7,6 @@
     - ansible_vars.yaml
 
   vars:
-    users: []
     apt_packages: []
     totp: false
     docker: false
@@ -46,46 +45,17 @@
         sftp_enabled: true
         ssh_print_last_log: true
       when: totp
+    - role: singleplatform-eng.users
+      become: yes
+    - role: geerlingguy.docker
+      become: yes
+      when: docker
+
 
   tasks:
     - name: Wait for cloud init to finish
       wait_for:
         path: /var/lib/cloud/instance/boot-finished
-
-    - name: Configure users
-      block:
-        - name: Create users
-          user:
-            name: "{{ item.username }}"
-            comment: "{{ item.name }}"
-            state: present
-          loop: "{{ users }}"
-          when: item.enabled
-
-        - name: Disable users
-          user:
-            name: "{{ item.username }}"
-            comment: "{{ item.name }}"
-            state: absent
-          loop: "{{ users }}"
-          when: not item.enabled
-
-        - name: Add users public keys
-          authorized_key:
-            user: "{{ item.username }}"
-            key: "{{ lookup('file', item.keyfile) }}"
-            state: present
-          loop: "{{ users }}"
-          when: item.enabled
-
-        - name: Add admin users to the admin group
-          user:
-            name: "{{ item.username }}"
-            append: true
-            groups: admin
-          loop: "{{ users }}"
-          when: item.admin and item.enabled
-      become: yes
 
     - name: Allow users in the admin group to sudo without a password
       lineinfile:
@@ -162,13 +132,6 @@
           delegate_to: localhost
           when: users is defined
       when: totp
-
-    # This is run after users are created so that they may be added to the docker group
-    - name: Install and configure docker
-      become: yes
-      import_role:
-        name: geerlingguy.docker
-      when: docker
 
     - name: Install selected packages
       apt:

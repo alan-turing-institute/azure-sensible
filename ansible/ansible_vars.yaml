@@ -3,27 +3,45 @@
 # Declare each user as a new list item. Each user requires the following keys,
 #   - name: Full name
 #   - username: Linux username (used to login)
-#   - keyfile: Path to the users public ssh key
-#   - admin: if true the account will be a sudoer - enabled: if false the
-#            account will be deactivated (login will not be allowed, but data
-#            will not be deleted)
+#   - ssh_key: A list of the users public ssh keys as strings (with no newlines)
+#   - groups: A list of groups to add the user to, add users to the "admin"
+#             group to allow them to use sudo
+# Additional keys to configure users can be found here:
+# https://galaxy.ansible.com/singleplatform-eng/users
+# Default: []
 # users:
 #   - name: Harry Lime
 #     username: harry
-#     keyfile: "~/.ssh/id_rsa.pub"
-#     admin: false
-#     enabled: true
+#     ssh_key:
+#       - "ssh-rsa ..."
+#     groups: ["admin"]
+
+# Users to disable or delete
+# Declare each user as a new list item. Each item has the following keys,
+#   - username: Linux username
+#   - remove: If "yes" the users data (home directory, etc.) will be removed
+#   - force: If "yes" force the removal of user data
+# Default: []
+# users_deleted:
+#   - username: harry
+#     remove: no
+#     force: no
 
 # Ubuntu packages to install. Each package is a list item. You can find all of
 # the available packages at https://packages.ubuntu.com/bionic/
+# Default: []
 # apt_packages:
 #   - vim
 #   - git
 
 # Enforce TOTP authentication and create a TOTP hash for every user.
+# Default: false
 # totp: true
 
 # Install docker
+# Default: false
 # docker: true
+
 # Users to add to the docker group (required to use commands like `docker run`)
+# Default: []
 # docker_users: [harry]
