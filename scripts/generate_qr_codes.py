@@ -8,13 +8,16 @@ import argparse
 
 def main():
     """Generate QR codes from TOTP hashes"""
+
+    path = Path(__file__).parent.absolute()
+
     parser = argparse.ArgumentParser(
         description="Generate QR codes from TOTP hashes"
     )
     parser.add_argument(
         "--totp-hashes",
         type=str,
-        default="./totp_hashes.txt",
+        default=str(path / "../ansible/totp_hashes.txt"),
         help="Path of the TOTP hashes file"
     )
     parser.add_argument(
@@ -32,7 +35,7 @@ def main():
     # Get the machine name from terraform state
     host_name = re.search(
         r'^\s+"computer_name": "(\S*)",$',
-        open("../terraform/terraform.tfstate").read(),
+        open(path / "../terraform/terraform.tfstate").read(),
         re.MULTILINE
     ).group(1)
 

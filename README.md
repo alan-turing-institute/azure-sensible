@@ -128,10 +128,10 @@ contains the information needed to generate QR code images for each user.
 To generate the QR code images run the included Python script
 
 ```
-$ ./ansible/generate_qr_codes.py
+$ ./scripts/generate_qr_codes.py
 ```
 
-There will now be a set of PNG files in the ansible directory, one for each
+There will now be a set of PNG files in your current directory, one for each
 user, with file names in the format `<username>.png`. These can be distributed
 to each user so that they may scan the QR code with their authenticator app.
 
