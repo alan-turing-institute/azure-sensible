@@ -100,6 +100,11 @@ how Ansible will configure your virtual machine. Edit
 [`ansible/ansible_vars.yaml`](ansible/ansible_vars.yaml), as before there are
 comments to explain the options.
 
+You can use [`scripts/generate_password.py`](scripts/generate_password.py) to
+create compatible password hashes for your users without displaying the password
+as plain text. See the [README](scripts/README.md#generating-password-hashes)
+for instructions.
+
 Install the required ansible modules from [Ansible
 Galaxy](https://galaxy.ansible.com)
 
@@ -124,10 +129,10 @@ contains the information needed to generate QR code images for each user.
 To generate the QR code images run the included Python script
 
 ```
-$ ./ansible/generate_qr_codes.py
+$ ./scripts/generate_qr_codes.py
 ```
 
-There will now be a set of PNG files in the ansible directory, one for each
+There will now be a set of PNG files in your current directory, one for each
 user, with file names in the format `<username>.png`. These can be distributed
 to each user so that they may scan the QR code with their authenticator app.
 
