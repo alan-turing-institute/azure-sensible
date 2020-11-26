@@ -102,7 +102,8 @@ comments to explain the options.
 
 You can use [`scripts/generate_password.py`](scripts/generate_password.py) to
 create compatible password hashes for your users without displaying the password
-as plain text. See the [README](scripts/README.md#generating-password-hashes) for instructions.
+as plain text. See the [README](scripts/README.md#generating-password-hashes)
+for instructions.
 
 Install the required ansible modules from [Ansible
 Galaxy](https://galaxy.ansible.com)
