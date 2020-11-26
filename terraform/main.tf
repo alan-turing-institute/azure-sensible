@@ -111,8 +111,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
     version   = "latest"
   }
 }
@@ -139,8 +139,6 @@ resource "local_file" "ansible_inventory" {
   content         = <<-DOC
     ---
     all:
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
       hosts:
         vm:
           ansible_host: ${data.azurerm_public_ip.ip.ip_address}
