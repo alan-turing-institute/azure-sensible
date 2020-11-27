@@ -79,7 +79,7 @@ resource "azurerm_network_interface" "nic" {
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "${var.prefix}NICConfg"
+    name                          = "${var.prefix}NICConfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.publicip.id
@@ -115,6 +115,29 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "20_04-lts"
     version   = "latest"
   }
+}
+
+# Create a data disk
+resource "azurerm_managed_disk" "disk" {
+  name                = "${var.prefix}DataDisk"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = var.data_disk_size_gb
+
+  count = var.data_disk_size_gb > 0 ? 1 : 0
+}
+
+# Attach data disk
+resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
+  managed_disk_id    = azurerm_managed_disk.disk[count.index].id
+  virtual_machine_id = azurerm_linux_virtual_machine.vm.id
+  lun                = "2"
+  caching            = "ReadWrite"
+
+  count = var.data_disk_size_gb > 0 ? 1 : 0
 }
 
 data "azurerm_public_ip" "ip" {

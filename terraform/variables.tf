@@ -17,3 +17,8 @@ variable "admin_username" {
   type    = string
   default = "ansible_admin"
 }
+
+variable "data_disk_size_gb" {
+  type    = number
+  default = 0
+}

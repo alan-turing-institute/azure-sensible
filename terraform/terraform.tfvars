@@ -9,6 +9,11 @@
 # Default = "Standard_B2s"
 # vm_size = "Standard_DS3_v2"
 
+# Data disk size in GB
+# If > 0 a data disk will be created and attached to the virtual machine
+# Default = 0
+# data_disk_size_gb = 100
+
 # Azure region
 # (https://azure.microsoft.com/en-us/global-infrastructure/geographies/) to
 # deploy your resources to. This will have an impact on connection speed,
