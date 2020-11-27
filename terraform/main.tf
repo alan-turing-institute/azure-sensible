@@ -169,3 +169,12 @@ resource "local_file" "ansible_inventory" {
           ansible_ssh_private_key_file: ${local_file.admin_private_key.filename}
     DOC
 }
+
+resource "local_file" "ansible_variables" {
+  filename        = "../ansible/terraform_vars.yaml"
+  file_permission = "0644"
+  content         = <<-DOC
+    ---
+    data_disk_size_gb: ${var.data_disk_size_gb}
+    DOC
+}
