@@ -79,7 +79,7 @@ resource "azurerm_network_interface" "nic" {
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "${var.prefix}NICConfg"
+    name                          = "${var.prefix}NICConfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.publicip.id
@@ -117,6 +117,29 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
+# Create a data disk
+resource "azurerm_managed_disk" "disk" {
+  name                = "${var.prefix}DataDisk"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  storage_account_type = "Premium_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = var.data_disk_size_gb
+
+  count = var.data_disk_size_gb > 0 ? 1 : 0
+}
+
+# Attach data disk
+resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
+  managed_disk_id    = azurerm_managed_disk.disk[count.index].id
+  virtual_machine_id = azurerm_linux_virtual_machine.vm.id
+  lun                = "2"
+  caching            = "ReadWrite"
+
+  count = var.data_disk_size_gb > 0 ? 1 : 0
+}
+
 data "azurerm_public_ip" "ip" {
   name                = azurerm_public_ip.publicip.name
   resource_group_name = azurerm_linux_virtual_machine.vm.resource_group_name
@@ -144,5 +167,14 @@ resource "local_file" "ansible_inventory" {
           ansible_host: ${data.azurerm_public_ip.ip.ip_address}
           ansible_user: ${var.admin_username}
           ansible_ssh_private_key_file: ${local_file.admin_private_key.filename}
+    DOC
+}
+
+resource "local_file" "ansible_variables" {
+  filename        = "../ansible/terraform_vars.yaml"
+  file_permission = "0644"
+  content         = <<-DOC
+    ---
+    data_disk_size_gb: ${var.data_disk_size_gb}
     DOC
 }

@@ -5,6 +5,7 @@
 
   vars_files:
     - ansible_vars.yaml
+    - terraform_vars.yaml
 
   vars:
     apt_packages: []
@@ -56,6 +57,73 @@
     - name: Wait for cloud init to finish
       wait_for:
         path: /var/lib/cloud/instance/boot-finished
+
+    - name: Configure data disk
+      block:
+        - name: Partition disk
+          become: yes
+          community.general.parted:
+            device: /dev/disk/azure/scsi1/lun2
+            label: gpt
+            number: 1
+            state: present
+          register: data_disk
+
+        - name: Create ext4 file system
+          become: yes
+          community.general.filesystem:
+            device: "{{ data_disk.disk.dev }}1"
+            fstype: ext4
+
+        - name: Create group for shared work
+          become: yes
+          group:
+            name: shared
+            system: yes
+            state: present
+
+        - name: Add all users to the shared group
+          become: yes
+          user:
+            name: "{{ item.username }}"
+            groups: shared
+            append: true
+          loop: "{{ users }}"
+
+        - name: Create shared directory
+          become: yes
+          file:
+            path: /shared
+            state: directory
+            owner: root
+            group: shared
+            mode: u=rwx,g=rwx,o=rx,g+s
+
+        - name: Ensure setfacl and getfacl are installed
+          become: yes
+          apt:
+            name: acl
+            state: present
+
+        - name: Set group permissions for new files in shared data directory
+          become: yes
+          acl:
+            path: /shared
+            etype: group
+            default: yes
+            permissions: rw
+            state: present
+
+        - name: Mount data partition
+          become: yes
+          mount:
+            path: "/shared"
+            state: mounted
+            src: "{{ data_disk.disk.dev }}1"
+            fstype: ext4
+            opts: defaults,nofail
+            passno: "2"
+      when: data_disk_size_gb | int > 0
 
     - name: Configure TOTP authentication
       block:
