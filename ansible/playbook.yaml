@@ -75,14 +75,29 @@
             device: "{{ data_disk.disk.dev }}1"
             fstype: ext4
 
+        - name: Create group for shared work
+          become: yes
+          group:
+            name: shared
+            system: yes
+            state: present
+
+        - name: Add all users to the shared group
+          become: yes
+          user:
+            name: "{{ item.username }}"
+            groups: shared
+            append: true
+          loop: "{{ users }}"
+
         - name: Create shared directory
           become: yes
           file:
             path: /shared
             state: directory
             owner: root
-            group: root
-            mode: u=rwx,g=rwx,o=rwx
+            group: shared
+            mode: u=rwx,g=rwx,o=rx,g+s
 
         - name: Ensure setfacl and getfacl are installed
           become: yes
@@ -90,17 +105,14 @@
             name: acl
             state: present
 
-        - name: Set 'group' and 'other' permissions for new files in shared data directory
+        - name: Set group permissions for new files in shared data directory
           become: yes
           acl:
             path: /shared
-            etype: "{{ item }}"
+            etype: group
             default: yes
             permissions: rw
             state: present
-          loop:
-            - group
-            - other
 
         - name: Mount data partition
           become: yes
