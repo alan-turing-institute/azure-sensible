@@ -26,9 +26,9 @@ IP address, _etc._) and Ansible is used to configure the virtual machine.
 
 Before you start, you will need to install some dependencies,
 
-- azure cli
-- terraform
-- ansible
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 Additionally for generating QR code images to be scanned with an authenticator
 app you will need,
