@@ -14,6 +14,10 @@ deployment is
   and redeploy your environment on demand)
 - Secure (public key authentication by default with optional two-factor
   authentication)
+- Hackable (we aim to provide a good starting point for building the environment
+  you need)
+- [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
+  code as well as to merge it with your own)
 
 ## How to use this repository
 
