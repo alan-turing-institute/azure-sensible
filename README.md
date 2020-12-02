@@ -22,6 +22,15 @@ The repository is split into two directories [terraform](./terraform) and
 Terraform is used to deploy the Azure resources (virtual machines, disks, public
 IP address, _etc._) and Ansible is used to configure the virtual machine.
 
+### Get the code
+
+Download and unzip the [latest
+release](https://github.com/alan-turing-institute/azure-sensible/releases/latest) or clone this repository
+
+```
+$ git clone https://github.com/alan-turing-institute/azure-sensible.git
+```
+
 ### Requirements
 
 Before you start, you will need to install some dependencies,
