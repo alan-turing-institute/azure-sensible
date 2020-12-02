@@ -44,7 +44,9 @@ Additionally for generating QR code images to be scanned with an authenticator
 app you will need,
 
 - [Python > 3.6](https://wiki.python.org/moin/BeginnersGuide/Download)
-- qrencode
+- [qrencode](https://fukuchi.org/works/qrencode/) (which you will likely find in
+  you distributions repositories or
+  [brew](https://formulae.brew.sh/formula/qrencode))
 
 ### Terraform, provisioning your virtual machine
 
