@@ -20,7 +20,7 @@
 # Azure region
 # (https://azure.microsoft.com/en-us/global-infrastructure/geographies/) to
 # deploy your resources to. This will have an impact on connection speed,
-# available vm sizes and cost.
+# available virtual machine sizes and cost.
 # Default = "eastus"
 # location = "uksouth"
 
