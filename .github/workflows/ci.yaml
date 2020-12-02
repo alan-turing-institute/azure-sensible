@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
   ansible_lint:
-    name: 'Ansible lint'
+    name: 'Lint Ansible'
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
           targets: "playbook.yaml"
 
   yaml_lint:
-    name: 'YAML lint'
+    name: 'Lint YAML'
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +47,7 @@ jobs:
         run: mdl --style .mdl_style.rb ./
 
   markdown_link_check:
-    name: 'Markdown link check'
+    name: 'Check Markdown links'
     runs-on: ubuntu-latest
 
     steps:
