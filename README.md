@@ -25,7 +25,8 @@ IP address, _etc._) and Ansible is used to configure the virtual machine.
 ### Get the code
 
 Download and unzip the [latest
-release](https://github.com/alan-turing-institute/azure-sensible/releases/latest) or clone this repository
+release](https://github.com/alan-turing-institute/azure-sensible/releases/latest)
+or clone this repository
 
 ```
 $ git clone https://github.com/alan-turing-institute/azure-sensible.git
