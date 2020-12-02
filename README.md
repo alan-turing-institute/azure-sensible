@@ -43,7 +43,7 @@ Before you start, you will need to install some dependencies,
 Additionally for generating QR code images to be scanned with an authenticator
 app you will need,
 
-- Python > 3.6
+- [Python > 3.6](https://wiki.python.org/moin/BeginnersGuide/Download)
 - qrencode
 
 ### Terraform, provisioning your virtual machine
