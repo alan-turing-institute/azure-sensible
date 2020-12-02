@@ -10,7 +10,10 @@
 # vm_size = "Standard_DS3_v2"
 
 # Data disk size in GB
-# If > 0 a data disk will be created and attached to the virtual machine
+# If > 0 a data disk will be created and attached to the virtual machine. The
+# disk will have a single partition mounted at `/shared` and will be configured
+# so all users have read/write access to the directory and all files created in
+# it.
 # Default = 0
 # data_disk_size_gb = 100
 
