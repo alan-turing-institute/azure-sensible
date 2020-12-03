@@ -5,7 +5,7 @@ on: [push, pull_request]
 
 jobs:
   ansible_lint:
-    name: 'Ansible lint'
+    name: 'Lint Ansible'
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
           targets: "playbook.yaml"
 
   yaml_lint:
-    name: 'YAML lint'
+    name: 'Lint YAML'
     runs-on: ubuntu-latest
 
     steps:
@@ -27,12 +27,7 @@ jobs:
         uses: ibiqlik/action-yamllint@v3.0.0
         with:
           file_or_dir: .
-          config_data: |
-            extends: default
-            rules:
-              line-length:
-                max: 80
-                level: warning
+          config_file: ./.yamllint.yaml
 
   markdown_lint:
     name: 'Lint Markdown'
@@ -52,7 +47,7 @@ jobs:
         run: mdl --style .mdl_style.rb ./
 
   markdown_link_check:
-    name: 'Markdown link check'
+    name: 'Check Markdown links'
     runs-on: ubuntu-latest
 
     steps:

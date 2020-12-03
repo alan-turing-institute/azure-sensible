@@ -14,6 +14,10 @@ deployment is
   and redeploy your environment on demand)
 - Secure (public key authentication by default with optional two-factor
   authentication)
+- Hackable (we aim to provide a good starting point for building the environment
+  you need)
+- [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
+  code as well as to merge it with your own)
 
 ## How to use this repository
 
@@ -22,19 +26,31 @@ The repository is split into two directories [terraform](./terraform) and
 Terraform is used to deploy the Azure resources (virtual machines, disks, public
 IP address, _etc._) and Ansible is used to configure the virtual machine.
 
+### Get the code
+
+Download and unzip the [latest
+release](https://github.com/alan-turing-institute/azure-sensible/releases/latest)
+or clone this repository
+
+```
+$ git clone https://github.com/alan-turing-institute/azure-sensible.git
+```
+
 ### Requirements
 
 Before you start, you will need to install some dependencies,
 
-- azure cli
-- terraform
-- ansible
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 Additionally for generating QR code images to be scanned with an authenticator
 app you will need,
 
-- Python > 3.6
-- qrencode
+- [Python > 3.6](https://wiki.python.org/moin/BeginnersGuide/Download)
+- [qrencode](https://fukuchi.org/works/qrencode/) (which you will likely find in
+  you distributions repositories or
+  [brew](https://formulae.brew.sh/formula/qrencode))
 
 ### Terraform, provisioning your virtual machine
 
