@@ -27,3 +27,9 @@
 # Username of the administrator account created to manage the virtual machine through Ansible.
 # Default = "ansible_admin"
 # admin_username = "ansible_admin"
+
+# Use Azure's Data Science image
+# (https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/overview)
+# This will have a common data science toolkit preinstalled
+# Default = false
+# dsvm = true
