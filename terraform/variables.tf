@@ -22,3 +22,8 @@ variable "data_disk_size_gb" {
   type    = number
   default = 0
 }
+
+variable "dsvm" {
+  type    = bool
+  default = false
+}
