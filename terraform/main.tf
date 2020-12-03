@@ -26,6 +26,20 @@ module "vm" {
   public_key_openssh  = tls_private_key.admin.public_key_openssh
 }
 
+# Import Data Science VM module
+module "dsvm" {
+  source = "./data_science_vm"
+  count  = var.dsvm ? 1 : 0
+
+  prefix              = var.prefix
+  vm_size             = var.vm_size
+  admin_username      = var.admin_username
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  nic_id              = azurerm_network_interface.nic.id
+  public_key_openssh  = tls_private_key.admin.public_key_openssh
+}
+
 # Create admin user SSH key
 resource "tls_private_key" "admin" {
   # algorithm   = "ECDSA"
@@ -115,9 +129,9 @@ resource "azurerm_managed_disk" "disk" {
 
 # Attach data disk
 resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
-  depends_on         = [module.vm]
+  depends_on         = [module.vm, module.dsvm]
   managed_disk_id    = azurerm_managed_disk.disk[count.index].id
-  virtual_machine_id = [module.vm.id]
+  virtual_machine_id = [module.vm.id, module.dsvm.id]
   lun                = "2"
   caching            = "ReadWrite"
 
@@ -127,7 +141,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
 data "azurerm_public_ip" "ip" {
   name                = azurerm_public_ip.publicip.name
   resource_group_name = azurerm_resource_group.rg.name
-  depends_on          = [module.vm]
+  depends_on          = [module.vm, module.dsvm]
 }
 
 output "public_ip_address" {
