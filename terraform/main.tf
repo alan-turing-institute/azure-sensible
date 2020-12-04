@@ -131,7 +131,7 @@ resource "azurerm_managed_disk" "disk" {
 resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
   depends_on         = [module.vm, module.dsvm]
   managed_disk_id    = azurerm_managed_disk.disk[count.index].id
-  virtual_machine_id = [module.vm.id, module.dsvm.id]
+  virtual_machine_id = [module.vm.vm_id, module.dsvm.vm_id]
   lun                = "2"
   caching            = "ReadWrite"
 
