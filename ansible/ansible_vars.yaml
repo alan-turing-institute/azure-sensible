@@ -6,7 +6,11 @@
 #   - password: A password hash for the user (required for sudo). See
 #               https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
 #               or use scripts/generate_password.py to create a suitable hash.
-#   - ssh_key: A list of the users public ssh keys as strings (with no newlines)
+#   - ssh_key: A list of the users public ssh key(s). List items can take a number of forms
+#                1. A list of the users public ssh keys as strings (with no newlines)
+#                2. The public keys associated with a GitHub account
+#                   "https://github.com/<username>.keys"
+#                3. A file lookup "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #   - groups: A list of groups to add the user to, add users to the "admin"
 #             group to allow them to use sudo
 # Additional keys to configure users can be found here:
@@ -18,6 +22,8 @@
 #     password: "$6$AHWU2/Si7zYj7cuJ$qiBAb03b6BdNM7Zjek1vhmmFlzGRDrIyj2H5Fz2jwx/pshy7XrZFrKc8owUGKwT1lmW3x9zANFdryR4MuDT1I/"
 #     ssh_key:
 #       - "ssh-rsa ..."
+#       - "https://githumb.com/harrylime.keys"
+#       - "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #     groups: [admin]
 
 # Users to disable or delete
