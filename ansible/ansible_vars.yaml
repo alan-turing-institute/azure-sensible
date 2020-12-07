@@ -27,7 +27,7 @@
 #     password: "$6$AHWU2/Si7zYj7cuJ$qiBAb03b6BdNM7Zjek1vhmmFlzGRDrIyj2H5Fz2jwx/pshy7XrZFrKc8owUGKwT1lmW3x9zANFdryR4MuDT1I/"
 #     ssh_key:
 #       - "ssh-rsa ..."
-#       - "https://githumb.com/harrylime.keys"
+#       - "https://github.com/harrylime.keys"
 #       - "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #     groups: [admin]
 
