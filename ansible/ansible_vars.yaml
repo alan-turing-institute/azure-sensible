@@ -1,51 +1,83 @@
 ---
 # Users to create
+#
 # Declare each user as a new list item. Each user requires the following keys,
 #   - name: Full name
 #   - username: Linux username (used to login)
 #   - password: A password hash for the user (required for sudo). See
 #               https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
 #               or use scripts/generate_password.py to create a suitable hash.
-#   - ssh_key: A list of the users public ssh keys as strings (with no newlines)
+#   - ssh_key: A list of the users public ssh key(s). List items can take a number of forms
+#                1. A list of the users public ssh keys as strings (with no newlines)
+#                2. The public keys associated with a GitHub account
+#                   "https://github.com/<username>.keys"
+#                3. A file lookup "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
+#              Examples of all three are given below.
 #   - groups: A list of groups to add the user to, add users to the "admin"
 #             group to allow them to use sudo
 # Additional keys to configure users can be found here:
 # https://galaxy.ansible.com/singleplatform-eng/users
+#
 # Default: []
+#
+# Example:
 # users:
 #   - name: Harry Lime
 #     username: harry
 #     password: "$6$AHWU2/Si7zYj7cuJ$qiBAb03b6BdNM7Zjek1vhmmFlzGRDrIyj2H5Fz2jwx/pshy7XrZFrKc8owUGKwT1lmW3x9zANFdryR4MuDT1I/"
 #     ssh_key:
 #       - "ssh-rsa ..."
+#       - "https://github.com/harrylime.keys"
+#       - "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #     groups: [admin]
 
 # Users to disable or delete
+#
 # Declare each user as a new list item. Each item has the following keys,
 #   - username: Linux username
 #   - remove: If "yes" the users data (home directory, etc.) will be removed
 #   - force: If "yes" force the removal of user data
+#
 # Default: []
+#
+# Example:
 # users_deleted:
 #   - username: harry
 #     remove: no
 #     force: no
 
-# Ubuntu packages to install. Each package is a list item. You can find all of
-# the available packages at https://packages.ubuntu.com/bionic/
+
+# Ubuntu packages to install.
+#
+# Each package is a list item. You can find all of the available packages at
+# https://packages.ubuntu.com/focal/
+#
 # Default: []
+#
+# Example:
 # apt_packages:
 #   - vim
 #   - git
 
+
 # Enforce TOTP authentication and create a TOTP hash for every user.
+#
 # Default: false
+#
+# Example:
 # totp: true
 
 # Install docker
+#
 # Default: false
+#
+# Example:
 # docker: true
 
+
 # Users to add to the docker group (required to use commands like `docker run`)
+#
 # Default: []
+#
+# Example:
 # docker_users: [harry]
