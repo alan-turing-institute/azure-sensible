@@ -7,11 +7,12 @@
 #   - password: A password hash for the user (required for sudo). See
 #               https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
 #               or use scripts/generate_password.py to create a suitable hash.
-#   - ssh_key: A list of the users public ssh key(s). List items can take a number of forms
-#                1. A list of the users public ssh keys as strings (with no newlines)
-#                2. The public keys associated with a GitHub account
+#   - ssh_key: A list of the users public ssh key(s). List items can take a number of forms,
+#                1. A string of a single public key (with no newlines)
+#                2. A url of the public keys associated with a GitHub account
 #                   "https://github.com/<username>.keys"
-#                3. A file lookup "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
+#                3. A jinja2 template to fetch key(s) from a file
+#                   "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #              Examples of all three are given below.
 #   - groups: A list of groups to add the user to, add users to the "admin"
 #             group to allow them to use sudo
