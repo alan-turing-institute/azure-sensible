@@ -12,7 +12,7 @@ def main():
         password_hash = sha512_crypt.using(rounds=5000).hash(getpass())
         # Ask again and confirm if the hashes match
         verified = sha512_crypt.verify(
-            getpass("Verify password:"),
+            getpass("Verify password: "),
             password_hash
         )
 
