@@ -8,6 +8,10 @@ template: |
 
   $CHANGES
 
+  ## Contributors
+
+  $CONTRIBUTORS
+
 categories:
   - title: '🚀 Features'
     label: 'enhancement'
