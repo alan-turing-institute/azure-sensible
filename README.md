@@ -29,7 +29,6 @@ For more complicated architectures, such as those involving multiple hosts, it
 may be best to build your deployment from the ground up. Nevertheless, we hope
 that you can still find some inspiration and useful hints here.
 
-
 ## How to use this repository
 
 The repository is split into two directories [terraform](./terraform) and
