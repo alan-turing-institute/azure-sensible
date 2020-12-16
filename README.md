@@ -96,7 +96,7 @@ will do. Run the terraform plan with
 $ terraform apply
 ```
 
-> ⚠️  Warning
+> ⚠️ Warning
 >
 > The Terraform plan generates an SSH key for the Ansible admin account. The
 > private key is [stored
@@ -105,7 +105,7 @@ $ terraform apply
 > the terraform state](https://www.terraform.io/docs/state/remote.html) and
 > should be replaced if you intend on doing so.
 
-### ⚙️  Ansible, configuring your virtual machine
+### ⚙️ Ansible, configuring your virtual machine
 
 Ansible uses an inventory file to declare managed nodes and arrange them into
 groups. The terraform plan will have created an inventory for you specifying
