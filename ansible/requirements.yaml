@@ -1,5 +1,8 @@
 ---
-- src: dev-sec.ssh-hardening
-- src: geerlingguy.docker
-- src: oefenweb.fail2ban
-- src: singleplatform-eng.users
+roles:
+  - name: geerlingguy.docker
+  - name: oefenweb.fail2ban
+  - name: singleplatform-eng.users
+
+collections:
+  - name: devsec.hardening
