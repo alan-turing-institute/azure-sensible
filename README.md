@@ -23,8 +23,12 @@ deployment is
 
 While we hope this repository will be useful it will not (and is not intended
 to) solve all cloud computing problems. In particular this template is not
-intended to expose all of the possibilities of Ansible and Terraform. It may be
-best to build more complicated architectures from the ground up.
+intended to expose all of the possibilities of Ansible and Terraform.
+
+For more complicated architectures, such as those involving multiple hosts, it
+may be best to build your deployment from the ground up. Nevertheless, we hope
+that you can still find some inspiration and useful hints here.
+
 
 ## How to use this repository
 
