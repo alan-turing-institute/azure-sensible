@@ -159,7 +159,7 @@ public IPv4 address of your virtual machine. You can connect to the machine
 via SSH using this IP address and the credentials of a user your created
 
 ```
-$ ssh <username>@<ip_address> -i <path_to_public_keyfile>
+$ ssh <username>@<ip_address> -i <path_to_private_keyfile>
 ```
 
 ### Destroy the resources
