@@ -9,14 +9,14 @@ files for deploying and configuring Azure virtual machines.
 Through using and building upon these examples you will find that your
 deployment is
 
-- Fast (no forms or pointing and clicking in your browser required)
-- Reproducible (as long as you keep your configuration files you can tear down
+- 🚅 Fast (no forms or pointing and clicking in your browser required)
+- 🔁 Reproducible (as long as you keep your configuration files you can tear down
   and redeploy your environment on demand)
-- Secure (public key authentication by default with optional two-factor
+- 🔐 Secure (public key authentication by default with optional two-factor
   authentication)
-- Hackable (we aim to provide a good starting point for building the environment
+- 💻 Hackable (we aim to provide a good starting point for building the environment
   you need)
-- [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
+- 🤝 [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
   code as well as to merge it with your own)
 
 ## How to use this repository
@@ -26,7 +26,7 @@ The repository is split into two directories [terraform](./terraform) and
 Terraform is used to deploy the Azure resources (virtual machines, disks, public
 IP address, _etc._) and Ansible is used to configure the virtual machine.
 
-### Get the code
+### 🎁 Get the code
 
 Download and unzip the [latest
 release](https://github.com/alan-turing-institute/azure-sensible/releases/latest)
@@ -36,7 +36,7 @@ or clone this repository
 $ git clone https://github.com/alan-turing-institute/azure-sensible.git
 ```
 
-### Requirements
+### 📦 Requirements
 
 Before you start, you will need to install some dependencies,
 
@@ -48,11 +48,11 @@ Additionally for generating QR code images to be scanned with an authenticator
 app you will need,
 
 - [Python > 3.6](https://wiki.python.org/moin/BeginnersGuide/Download)
-- [qrencode](https://fukuchi.org/works/qrencode/) (which you will likely find in
-  you distributions repositories or
+- [qrencode](https://fukuchi.org/works/qrencode/) (which you will likely be able
+  to find on you distributions repositories or on
   [brew](https://formulae.brew.sh/formula/qrencode))
 
-### Terraform, provisioning your virtual machine
+### 🏞️ Terraform, provisioning your virtual machine
 
 To use terraform to deploy infrastructure on Azure, you will first need to
 authenticate using the Azure CLI
@@ -96,7 +96,7 @@ will do. Run the terraform plan with
 $ terraform apply
 ```
 
-> :warning: Warning
+> ⚠️ Warning
 >
 > The Terraform plan generates an SSH key for the Ansible admin account. The
 > private key is [stored
@@ -105,7 +105,7 @@ $ terraform apply
 > the terraform state](https://www.terraform.io/docs/state/remote.html) and
 > should be replaced if you intend on doing so.
 
-### Ansible, configuring your virtual machine
+### ⚙️ Ansible, configuring your virtual machine
 
 Ansible uses an inventory file to declare managed nodes and arrange them into
 groups. The terraform plan will have created an inventory for you specifying
@@ -136,7 +136,7 @@ virtual machine
 $ ansible-playbook -i inventory.yaml playbook.yaml
 ```
 
-### Optional: generating QR code images
+### 📱 Optional: generating QR code images
 
 If the option `totp` was `true` in `ansible_vars.yaml` the Ansible play will
 have created a file in the ansible directory called `totp_hashes.txt`. This file
@@ -152,7 +152,7 @@ There will now be a set of PNG files in your current directory, one for each
 user, with file names in the format `<username>.png`. These can be distributed
 to each user so that they may scan the QR code with their authenticator app.
 
-### Connect to your virtual machine
+### 🔗 Connect to your virtual machine
 
 Both the Terraform plan and the Ansible playbook will finish by printing the
 public IPv4 address of your virtual machine. You can connect to the machine
@@ -162,7 +162,7 @@ via SSH using this IP address and the credentials of a user your created
 $ ssh <username>@<ip_address> -i <path_to_private_keyfile>
 ```
 
-### Destroy the resources
+### 💣 Destroy the resources
 
 When you are finished, you can destroy the resources using Terraform. From the
 terraform directory run

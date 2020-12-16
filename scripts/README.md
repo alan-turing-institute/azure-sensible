@@ -1,6 +1,6 @@
-# Scripts
+# 🧰 Scripts
 
-## Generating password hashes
+## 🔑 Generating password hashes
 
 [`generate_password.py`](./generate_password.py) allows you to enter a password,
 without printing it to the screen, and produces a hash which can be inserted
@@ -22,7 +22,7 @@ $ ./generate_password.py
 You will be asked to enter the same password twice to ensure it has been typed
 correctly. If the two entries match, the hash will be printed to the terminal.
 
-## Generating QR code images
+## 📱 Generating QR code images
 
 [`generate_qr_codes.py`](./generate_qr_codes.py) takes the output of the ansible
 playbook and generates QR code images of the TOTP hashes for each user. These
