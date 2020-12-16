@@ -13,6 +13,9 @@
     docker: false
     docker_users: []
 
+  collections:
+    - devsec.hardening
+
   roles:
     - role: oefenweb.fail2ban
       become: yes
@@ -21,7 +24,7 @@
           - name: sshd
             maxretry: 5
             bantime: 1h
-    - role: dev-sec.ssh-hardening
+    - role: devsec.hardening.ssh_hardening
       become: yes
       vars:
         ssh_server_password_login: false
@@ -32,7 +35,7 @@
         sftp_enabled: true
         ssh_print_last_log: true
       when: not totp
-    - role: dev-sec.ssh-hardening
+    - role: devsec.hardening.ssh_hardening
       become: yes
       vars:
         ssh_server_password_login: false
