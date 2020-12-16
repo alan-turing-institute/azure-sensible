@@ -19,6 +19,13 @@ deployment is
 - 🤝 [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
   code as well as to merge it with your own)
 
+## What this is not
+
+While we hope this repository will be useful it will not (and is not intended
+to) solve all cloud computing problems. In particular this template is not
+intended to expose all of the possibilities of Ansible and Terraform. It may be
+best to build more complicated architectures from the ground up.
+
 ## How to use this repository
 
 The repository is split into two directories [terraform](./terraform) and
