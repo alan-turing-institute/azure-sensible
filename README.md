@@ -9,14 +9,14 @@ files for deploying and configuring Azure virtual machines.
 Through using and building upon these examples you will find that your
 deployment is
 
-- Fast (no forms or pointing and clicking in your browser required)
-- Reproducible (as long as you keep your configuration files you can tear down
+- 🚅 Fast (no forms or pointing and clicking in your browser required)
+- 🔁 Reproducible (as long as you keep your configuration files you can tear down
   and redeploy your environment on demand)
-- Secure (public key authentication by default with optional two-factor
+- 🔐 Secure (public key authentication by default with optional two-factor
   authentication)
-- Hackable (we aim to provide a good starting point for building the environment
+- 💻 Hackable (we aim to provide a good starting point for building the environment
   you need)
-- [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
+- 🤝 [Permissively licensed](./LICENSE) (you are free to copy, use and modify this
   code as well as to merge it with your own)
 
 ## How to use this repository
