@@ -17,7 +17,7 @@
 # Default = "Standard_B2s"
 #
 # Example:
-# vm_size = "Standard_DS3_v2"
+# vm_size = "Standard_D8s_v4"
 
 
 # Data disk size in GB
