@@ -148,8 +148,14 @@ Now you will be presented with the JupyterHub login page. Enter the username and
 password of your linux account, that you declared in
 [`ansible_vars.yaml`](../ansible/ansible_vars.yaml) to login.
 
+![jupyterhub_login](.images/jupyterhub_login.png)
+
 After authenticating you will see that your JupyterHub instance is already
-populated with examples which you can try running. You might also want to look
+populated with examples which you can try running.
+
+![jupyterhub_landing](.images/jupyterhub_landing.png)
+
+You might also want to look
 at the [Data science with an Ubuntu Data Science Virtual Machine in
 Azure](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/linux-dsvm-walkthrough)
 guide for more information on using the data science virtual machine.
