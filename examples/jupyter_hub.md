@@ -93,13 +93,13 @@ and password.
 Declare your users in [`ansible_vars.yaml`](../ansible/ansible_vars.yaml)
 following the template. Here are some tips,
 
-- Although passwords are optional, make sure that you define one for each user
-  so that they can authenticate with JupyterHub
+- Although passwords are optional for linux users, make sure that you define one
+  for each user so that they can authenticate with JupyterHub
+- You can use the [`generate_password.py`](../scripts/generate_password.py)
+  script to create password hashes for each user. Instructions can be found in
+  the [scripts directory README](../scripts/README.md)
 - If these users will not need to access the machine via SSH, there is no need
-  to declare an SSH keys
-- Use the [`generate_password.py`](../scripts/generate_password.py) script to
-  create password hashes for each user. Instructions can be found in the
-  [scripts directory README](../scripts/README.md)
+  to declare SSH keys
 
 ```diff
  #
@@ -142,11 +142,11 @@ web broswer, navigate to the JupyterHub web interface at
 `https://<ip_address>:8000`.
 
 JupyterHub has been set up with a self-signed certificate, which your browser
-will probably warn you about, but it is fine to accept the certificate.
+will probably warn you about. It is fine to accept the certificate.
 
 Now you will be presented with the JupyterHub login page. Enter the username and
-password of your linux account, that you declared in
-[`ansible_vars.yaml`](../ansible/ansible_vars.yaml) to login.
+password of your linux account (that you declared in
+[`ansible_vars.yaml`](../ansible/ansible_vars.yaml)) to login.
 
 ![jupyterhub_login](.images/jupyterhub_login.png)
 
