@@ -41,8 +41,5 @@ terraform_vars.yaml
 # Generated TOTP hashes
 totp_hashes.txt
 
-# Generated QR code images
-*.png
-
 # Python bytecode
 __pycache__
