@@ -30,4 +30,8 @@ variable "storage_type" {
 variable "data_disk_size_gb" {
   type    = number
   default = 0
+  validation {
+    condition     = var.data_disk_size_gb >= 0
+    error_message = "The data disk size must be a positive integer or 0."
+  }
 }
