@@ -131,6 +131,10 @@ following the template. Here are some tips,
 Follow the [normal procedure](../README.md#how-to-use-this-repository) to
 deploy and configure the machine using Terraform and Ansible.
 
+The initial setup of the data science virtual machine can take some time and the
+new virtual machine may be unresponsive at first. If Ansible reports that the
+host is unreachable, wait a few minutes and try again.
+
 ## 🛰️ Connect to JupyterHub
 
 The final output of Ansible will be the IP address of your virtual machine. In a
