@@ -87,6 +87,12 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# Associate network interface with network security group
+resource "azurerm_network_interface_security_group_association" "example" {
+  network_interface_id      = azurerm_network_interface.nic.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
 # Create a Linux virtual machine
 resource "azurerm_linux_virtual_machine" "vm" {
   name                  = "${var.prefix}VM"
