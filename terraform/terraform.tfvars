@@ -17,7 +17,19 @@
 # Default = "Standard_B2s"
 #
 # Example:
-# vm_size = "Standard_DS3_v2"
+# vm_size = "Standard_D8s_v4"
+
+
+# Type of storage to use
+#
+# You can find details of the storage types here:
+# https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types?toc=/azure/virtual-machines/linux/toc.json&bc=/azure/virtual-machines/linux/breadcrumb/toc.json
+# The valid options are Standard_LRS, StandardSSD_LRS, and Premium_LRS
+#
+# Default = "StandardSSD_LRS"
+#
+# Example
+# storage_type = "Premium_LRS"
 
 
 # Data disk size in GB

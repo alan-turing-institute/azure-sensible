@@ -106,7 +106,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   os_disk {
     name                 = "${var.prefix}OsDisk"
     caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
+    storage_account_type = var.storage_type
   }
 
   source_image_reference {
@@ -123,7 +123,7 @@ resource "azurerm_managed_disk" "disk" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  storage_account_type = "Premium_LRS"
+  storage_account_type = var.storage_type
   create_option        = "Empty"
   disk_size_gb         = var.data_disk_size_gb
 
