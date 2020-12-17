@@ -183,3 +183,8 @@ $ terraform destroy
 
 This will delete all Azure resources and any data stored on these resources will
 be lost.
+
+## Next steps
+
+See the [examples directory README](examples/README.md) for some practical
+examples building on the base configuration files.
