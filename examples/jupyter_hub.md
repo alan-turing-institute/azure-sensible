@@ -1,10 +1,9 @@
-# Multi-user JupyterHub
+# Multi-user JupyterHub/DSVM
 
-In this guide we will deploy a virtual machine hosting a
-[JupyterHub](https://jupyter.org/hub) instance configured for all your users.
-We will take advantage of the Azure [data science virtual
-machine](https://azure.microsoft.com/en-us/services/virtual-machines/data-science-virtual-machines/)
-which comes with all of the packages we need.
+In this guide we will deploy an Azure [data science virtual machine
+(DSVM)](https://azure.microsoft.com/en-us/services/virtual-machines/data-science-virtual-machines/)
+which all of you users can use through the [JupyterHub](https://jupyter.org/hub)
+web interface.
 
 ## 🏗️ Terraform variables
 
@@ -23,8 +22,7 @@ D8s v4 size is more suitable so uncomment that line.
 ```
 
 Alternatively if you want to leverage a GPU in your work, you can deploy a size
-with a GPU as the data science virtual machine image already has the drivers
-installed. For example
+with a GPU as the DSVM image already has the drivers installed. For example
 
 ```diff
 # Default = "Standard_B2s"
@@ -34,11 +32,11 @@ installed. For example
 +vm_size = "Standard_NC6"
 ```
 
-Next, specify the Ubuntu data science virtual machine image, also in
+Next, specify the Ubuntu DSVM image, also in
 [`terraform/terraform.tfvars`](../terraform/terraform.tfvars).
 
 ```diff
-# Example (An Ubuntu 18.04 data science virtual machine):
+# Example (An Ubuntu 18.04 DSVM):
 -# vm_image = {
 -#   publisher = "microsoft-dsvm"
 -#   offer     = "ubuntu-1804"
@@ -131,9 +129,9 @@ following the template. Here are some tips,
 Follow the [normal procedure](../README.md#how-to-use-this-repository) to
 deploy and configure the machine using Terraform and Ansible.
 
-The initial setup of the data science virtual machine can take some time and the
-new virtual machine may be unresponsive at first. If Ansible reports that the
-host is unreachable, wait a few minutes and try again.
+The initial setup of the DSVM can take some time and the new virtual machine may
+be unresponsive at first. If Ansible reports that the host is unreachable, wait
+a few minutes and try again.
 
 ## 🛰️ Connect to JupyterHub
 
@@ -155,7 +153,7 @@ populated with examples which you can try running.
 
 ![jupyterhub_landing](.images/jupyterhub_landing.png)
 
-You might also want to look
-at the [Data science with an Ubuntu Data Science Virtual Machine in
+You might also want to look at the [Data science with an Ubuntu Data Science
+Virtual Machine in
 Azure](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/linux-dsvm-walkthrough)
-guide for more information on using the data science virtual machine.
+guide for more information on using the DSVM.
