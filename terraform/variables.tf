@@ -35,3 +35,18 @@ variable "data_disk_size_gb" {
     error_message = "The data disk size must be a positive integer or 0."
   }
 }
+
+variable "vm_image" {
+  type = object({
+    publisher = string
+    offer     = string
+    sku       = string
+    version   = string
+  })
+  default = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  }
+}

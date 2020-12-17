@@ -32,6 +32,33 @@
 # storage_type = "Premium_LRS"
 
 
+# Virtual machine image
+#
+# This is an object defining which Linux virtual machine image to use. Each
+# image is defined by four strings, publisher, offer, sku and version. You can
+# find advice on searching through the available images here
+# https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
+#
+# The default image is Ubuntu 20.04, and the example below will deploy an Ubuntu
+# data science virtual machine
+# https://azure.microsoft.com/en-us/services/virtual-machines/data-science-virtual-machines/
+#
+# Default = {
+#   publisher = "Canonical"
+#   offer     = "0001-com-ubuntu-server-focal"
+#   sku       = "20_04-lts"
+#   version   = "latest"
+# }
+#
+# Example (An Ubuntu 18.04 data science virtual machine):
+# vm_image = {
+#   publisher = "microsoft-dsvm"
+#   offer     = "ubuntu-1804"
+#   sku       = "1804"
+#   version   = "latest"
+# }
+
+
 # Data disk size in GB
 #
 # If > 0 a data disk will be created and attached to the virtual machine. The
