@@ -56,7 +56,7 @@ Next, specify the Ubuntu data science virtual machine image, also in
 ## 🛳️ JupyterHub port
 
 The JupyterHub web interface runs on port 8000. However, if you look at
-[`main.tv`](../terraform/main.tf) you will see that inbound traffic is only
+[`main.tf`](../terraform/main.tf) you will see that inbound traffic is only
 allowed on one port, port 22 for SSH. We need to add a rule to allow inbound
 traffic on port 8000 to use JupyterHub
 
