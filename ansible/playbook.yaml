@@ -8,10 +8,26 @@
     - terraform_vars.yaml
 
   vars:
+    # Default variables
     apt_packages: []
     totp: false
     docker: false
     docker_users: []
+    # SSH configuration with and without TOTP
+    auth: "{{ 'totp' if totp else 'no_totp' }}"
+    ssh_vars:
+      ssh_challengeresponseauthentication:
+        totp: true
+        no_totp: false
+      sshd_authenticationmethods:
+        totp: "publickey,keyboard-interactive:pam"
+        no_totp: publickey
+      ssh_server_match_user:
+        totp:
+          - user: "{{ ansible_user }}"
+            rules: ["AuthenticationMethods publickey"]
+        no_totp: false
+
 
   collections:
     - devsec.hardening
@@ -27,28 +43,11 @@
     - role: devsec.hardening.ssh_hardening
       become: yes
       vars:
-        ssh_server_password_login: false
-        ssh_permit_root_login: "no"
-        ssh_use_pam: false
-        ssh_challengeresponseauthentication: false
-        sshd_authenticationmethods: publickey
         sftp_enabled: true
         ssh_print_last_log: true
-      when: not totp
-    - role: devsec.hardening.ssh_hardening
-      become: yes
-      vars:
-        ssh_server_password_login: false
-        ssh_permit_root_login: "no"
-        ssh_use_pam: true
-        ssh_challengeresponseauthentication: true
-        sshd_authenticationmethods: "publickey,keyboard-interactive:pam"
-        ssh_server_match_user:
-          - user: "{{ ansible_user }}"
-            rules: ["AuthenticationMethods publickey"]
-        sftp_enabled: true
-        ssh_print_last_log: true
-      when: totp
+        ssh_challengeresponseauthentication: "{{ ssh_vars.ssh_challengeresponseauthentication[auth] }}"
+        sshd_authenticationmethods: "{{ ssh_vars.sshd_authenticationmethods[auth] }}"
+        ssh_server_match_user: "{{ ssh_vars.ssh_server_match_user[auth] }}"
     - role: singleplatform-eng.users
       become: yes
     - role: geerlingguy.docker
