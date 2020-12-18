@@ -78,6 +78,16 @@
             device: "{{ data_disk.disk.dev }}1"
             fstype: ext4
 
+        - name: Mount data partition
+          become: yes
+          mount:
+            path: "/shared"
+            state: mounted
+            src: "{{ data_disk.disk.dev }}1"
+            fstype: ext4
+            opts: defaults,nofail
+            passno: "2"
+
         - name: Create group for shared work
           become: yes
           group:
@@ -93,7 +103,7 @@
             append: true
           loop: "{{ users }}"
 
-        - name: Create shared directory
+        - name: Configure shared directory
           become: yes
           file:
             path: /shared
@@ -116,16 +126,6 @@
             default: yes
             permissions: rw
             state: present
-
-        - name: Mount data partition
-          become: yes
-          mount:
-            path: "/shared"
-            state: mounted
-            src: "{{ data_disk.disk.dev }}1"
-            fstype: ext4
-            opts: defaults,nofail
-            passno: "2"
       when: data_disk_size_gb | int > 0
 
     - name: Configure TOTP authentication
