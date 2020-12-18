@@ -141,7 +141,7 @@ resource "azurerm_managed_disk" "disk" {
 resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
   managed_disk_id    = azurerm_managed_disk.disk[count.index].id
   virtual_machine_id = azurerm_linux_virtual_machine.vm.id
-  lun                = "2"
+  lun                = "0"
   caching            = "ReadWrite"
 
   count = var.data_disk_size_gb > 0 ? 1 : 0
