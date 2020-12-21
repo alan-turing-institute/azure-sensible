@@ -28,9 +28,13 @@
             rules: ["AuthenticationMethods publickey"]
         no_totp: false
 
-
   collections:
     - devsec.hardening
+
+  pre_tasks:
+    - name: Wait for cloud init to finish
+      wait_for:
+        path: /var/lib/cloud/instance/boot-finished
 
   roles:
     - role: oefenweb.fail2ban
@@ -54,12 +58,7 @@
       become: yes
       when: docker
 
-
   tasks:
-    - name: Wait for cloud init to finish
-      wait_for:
-        path: /var/lib/cloud/instance/boot-finished
-
     - name: Configure data disk
       block:
         - name: Partition disk
