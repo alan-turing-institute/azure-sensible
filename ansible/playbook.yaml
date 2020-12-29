@@ -8,10 +8,33 @@
     - terraform_vars.yaml
 
   vars:
+    # Default variables
     apt_packages: []
     totp: false
     docker: false
     docker_users: []
+    # SSH configuration with and without TOTP
+    auth: "{{ 'totp' if totp else 'no_totp' }}"
+    ssh_vars:
+      ssh_challengeresponseauthentication:
+        totp: true
+        no_totp: false
+      sshd_authenticationmethods:
+        totp: "publickey,keyboard-interactive:pam"
+        no_totp: publickey
+      ssh_server_match_user:
+        totp:
+          - user: "{{ ansible_user }}"
+            rules: ["AuthenticationMethods publickey"]
+        no_totp: false
+
+  collections:
+    - devsec.hardening
+
+  pre_tasks:
+    - name: Wait for cloud init to finish
+      wait_for:
+        path: /var/lib/cloud/instance/boot-finished
 
   roles:
     - role: oefenweb.fail2ban
@@ -21,49 +44,27 @@
           - name: sshd
             maxretry: 5
             bantime: 1h
-    - role: dev-sec.ssh-hardening
+    - role: devsec.hardening.ssh_hardening
       become: yes
       vars:
-        ssh_server_password_login: false
-        ssh_permit_root_login: "no"
-        ssh_use_pam: false
-        ssh_challengeresponseauthentication: false
-        sshd_authenticationmethods: publickey
         sftp_enabled: true
         ssh_print_last_log: true
-      when: not totp
-    - role: dev-sec.ssh-hardening
-      become: yes
-      vars:
-        ssh_server_password_login: false
-        ssh_permit_root_login: "no"
-        ssh_use_pam: true
-        ssh_challengeresponseauthentication: true
-        sshd_authenticationmethods: "publickey,keyboard-interactive:pam"
-        ssh_server_match_user:
-          - user: "{{ ansible_user }}"
-            rules: ["AuthenticationMethods publickey"]
-        sftp_enabled: true
-        ssh_print_last_log: true
-      when: totp
+        ssh_challengeresponseauthentication: "{{ ssh_vars.ssh_challengeresponseauthentication[auth] }}"
+        sshd_authenticationmethods: "{{ ssh_vars.sshd_authenticationmethods[auth] }}"
+        ssh_server_match_user: "{{ ssh_vars.ssh_server_match_user[auth] }}"
     - role: singleplatform-eng.users
       become: yes
     - role: geerlingguy.docker
       become: yes
       when: docker
 
-
   tasks:
-    - name: Wait for cloud init to finish
-      wait_for:
-        path: /var/lib/cloud/instance/boot-finished
-
     - name: Configure data disk
       block:
         - name: Partition disk
           become: yes
           community.general.parted:
-            device: /dev/disk/azure/scsi1/lun2
+            device: /dev/disk/azure/scsi1/lun0
             label: gpt
             number: 1
             state: present
@@ -74,6 +75,16 @@
           community.general.filesystem:
             device: "{{ data_disk.disk.dev }}1"
             fstype: ext4
+
+        - name: Mount data partition
+          become: yes
+          mount:
+            path: "/shared"
+            state: mounted
+            src: "{{ data_disk.disk.dev }}1"
+            fstype: ext4
+            opts: defaults,nofail
+            passno: "2"
 
         - name: Create group for shared work
           become: yes
@@ -90,7 +101,7 @@
             append: true
           loop: "{{ users }}"
 
-        - name: Create shared directory
+        - name: Configure shared directory
           become: yes
           file:
             path: /shared
@@ -113,16 +124,6 @@
             default: yes
             permissions: rw
             state: present
-
-        - name: Mount data partition
-          become: yes
-          mount:
-            path: "/shared"
-            state: mounted
-            src: "{{ data_disk.disk.dev }}1"
-            fstype: ext4
-            opts: defaults,nofail
-            passno: "2"
       when: data_disk_size_gb | int > 0
 
     - name: Configure TOTP authentication

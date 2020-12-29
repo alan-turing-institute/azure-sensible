@@ -1,4 +1,4 @@
-# Configure the Microsoft Azure Provider.
+# Configure the Microsoft Azure Provider
 terraform {
   required_providers {
     azurerm = {
@@ -8,6 +8,7 @@ terraform {
   }
 }
 
+# Declare Azure provider
 provider "azurerm" {
   features {}
 }
@@ -48,7 +49,7 @@ resource "tls_private_key" "admin" {
   rsa_bits  = "4096"
 }
 
-# Create a resource group
+# Create resource group
 resource "azurerm_resource_group" "rg" {
   name     = "${var.prefix}RG"
   location = var.location
@@ -114,13 +115,19 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# Associate network interface with network security group
+resource "azurerm_network_interface_security_group_association" "example" {
+  network_interface_id      = azurerm_network_interface.nic.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
 # Create a data disk
 resource "azurerm_managed_disk" "disk" {
   name                = "${var.prefix}DataDisk"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  storage_account_type = "Premium_LRS"
+  storage_account_type = var.storage_type
   create_option        = "Empty"
   disk_size_gb         = var.data_disk_size_gb
 
@@ -132,28 +139,32 @@ resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
   depends_on         = [module.vm, module.dsvm]
   managed_disk_id    = azurerm_managed_disk.disk[count.index].id
   virtual_machine_id = [module.vm.vm_id, module.dsvm.vm_id]
-  lun                = "2"
+  lun                = "0"
   caching            = "ReadWrite"
 
   count = var.data_disk_size_gb > 0 ? 1 : 0
 }
 
+# Register public IP address to write to Ansible inventory
 data "azurerm_public_ip" "ip" {
   name                = azurerm_public_ip.publicip.name
   resource_group_name = azurerm_resource_group.rg.name
   depends_on          = [module.vm, module.dsvm]
 }
 
+# Print public IP address
 output "public_ip_address" {
   value = data.azurerm_public_ip.ip.ip_address
 }
 
+# Write admin account private key to a file
 resource "local_file" "admin_private_key" {
   filename        = "../ansible/admin_id_rsa.pem"
   file_permission = "0600"
   content         = tls_private_key.admin.private_key_pem
 }
 
+# Create Ansible inventory for the defined virtual machine
 resource "local_file" "ansible_inventory" {
   filename        = "../ansible/inventory.yaml"
   file_permission = "0644"
@@ -168,6 +179,7 @@ resource "local_file" "ansible_inventory" {
     DOC
 }
 
+# Write variables needed by Ansible to a YAML file
 resource "local_file" "ansible_variables" {
   filename        = "../ansible/terraform_vars.yaml"
   file_permission = "0644"
