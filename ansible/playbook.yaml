@@ -10,9 +10,14 @@
   vars:
     # Default variables
     apt_packages: []
+    pip_packages: []
     totp: false
     docker: false
     docker_users: []
+    # Pip packages required for community.docker.* modules
+    docker_pip_packages:
+      - name: docker
+      - name: docker-compose
     # SSH configuration with and without TOTP
     auth: "{{ 'totp' if totp else 'no_totp' }}"
     ssh_vars:
@@ -57,6 +62,10 @@
     - role: geerlingguy.docker
       become: yes
       when: docker
+    - role: geerlingguy.pip
+      become: yes
+      vars:
+        pip_install_packages: "{{ pip_packages | union(docker_pip_packages) if docker else pip_packages }}"
 
   tasks:
     - name: Configure data disk

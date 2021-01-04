@@ -61,6 +61,27 @@
 #   - git
 
 
+# Pip packages
+#
+# Each package is a list item.  Declare a package as a dictionary with the
+# following keys,
+#   - name: package name
+#   - version: package version e.g. "1.2.3" or "latest" (default: latest)
+#   - state: one of present, absent, or forcereinstall (default: present)
+#
+# Packages are install from https://pypi.org
+#
+# Default: []
+#
+# Example:
+# pip_packages:
+#   - name: pytest
+#   - name: flake8
+#     version: "3.8.4"
+#     state: present
+#   - name: meshio
+
+
 # Enforce TOTP authentication and create a TOTP hash for every user.
 #
 # Default: false
