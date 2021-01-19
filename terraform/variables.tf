@@ -19,7 +19,7 @@ variable "admin_username" {
 }
 
 variable "storage_type" {
-  type = string
+  type    = string
   default = "StandardSSD_LRS"
   validation {
     condition     = can(contains(["Standard_LRS", "StandardSSD_LRS", "Premium_LRS"], var.storage_type))
