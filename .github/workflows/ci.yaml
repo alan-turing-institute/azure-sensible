@@ -14,7 +14,7 @@ jobs:
       - name: Lint Ansible Playbook
         uses: ansible/ansible-lint-action@master
         with:
-          targets: "playbook.yaml"
+          targets: "ansible/playbook.yaml"
 
   yaml_lint:
     name: 'Lint YAML'
@@ -79,6 +79,9 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
 
     steps:
       - name: Checkout
