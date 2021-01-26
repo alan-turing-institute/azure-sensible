@@ -13,6 +13,8 @@ The more detail provided will help isolate what is going on.
 Please also bear in mind that this repository is providing a generalised example and is maintained by volunteers.
 If you are attempting to deploy something bespoke, we may not have the expertise or the scope to provide support.
 But we will try to help to the best of our capabilities.
+
+Note that text in html comments will not be rendered.
 -->
 
 ### Description
@@ -51,3 +53,14 @@ Be careful not to share any sensitive information!
 # Paste relevant logs here
 ```
 </details>
+
+---
+
+### Updates
+
+<!--
+To avoid that others have to read through the full thread of comments, please update this initial comment with important updates (e.g. decisions taken) regularly.
+You can update the task list and summary above directly (this is encouraged!) or add new information below in this new section.
+-->
+
+*Lorem ipsum dolor sit amet, consectetur adipiscing.*
