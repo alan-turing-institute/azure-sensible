@@ -10,11 +10,11 @@ Note that text within html comment tags will not be rendered.
 ### Summary
 <!--
 Describe the problem to be fixed or feature to be implemented in this Pull Request.
-Please reference any related issue(s) and use fixes/close keywords to automatically close them, if pertinent.
-For example: "fix #58", or "addresses #238"
+Please reference any related issue(s) and use fixes/closes keywords to automatically close them, if pertinent.
+For example: "fixes #58", or "related to #238"
 -->
 
-fix #<!-- NUM -->
+fixes #<!-- NUM -->
 
 *Lorem ipsum dolor sit amet, consectetur adipiscing.*
 
