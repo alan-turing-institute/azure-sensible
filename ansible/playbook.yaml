@@ -38,11 +38,12 @@
 
   pre_tasks:
     - name: Wait for cloud init to finish
-      wait_for:
+      ansible.builtin.wait_for:
         path: /var/lib/cloud/instance/boot-finished
+
     - name: Update apt cache
       become: yes
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 600
 
@@ -54,6 +55,7 @@
           - name: sshd
             maxretry: 5
             bantime: 1h
+
     - role: devsec.hardening.ssh_hardening
       become: yes
       vars:
@@ -62,11 +64,14 @@
         ssh_challengeresponseauthentication: "{{ ssh_vars.ssh_challengeresponseauthentication[auth] }}"
         sshd_authenticationmethods: "{{ ssh_vars.sshd_authenticationmethods[auth] }}"
         ssh_server_match_user: "{{ ssh_vars.ssh_server_match_user[auth] }}"
+
     - role: singleplatform-eng.users
       become: yes
+
     - role: geerlingguy.docker
       become: yes
       when: docker
+
     - role: geerlingguy.pip
       become: yes
       vars:
@@ -92,7 +97,7 @@
 
         - name: Mount data partition
           become: yes
-          mount:
+          ansible.posix.mount:
             path: "/shared"
             state: mounted
             src: "{{ data_disk.disk.dev }}1"
@@ -102,14 +107,14 @@
 
         - name: Create group for shared work
           become: yes
-          group:
+          ansible.builtin.group:
             name: shared
             system: yes
             state: present
 
         - name: Add all users to the shared group
           become: yes
-          user:
+          ansible.builtin.user:
             name: "{{ item.username }}"
             groups: shared
             append: true
@@ -117,7 +122,7 @@
 
         - name: Configure shared directory
           become: yes
-          file:
+          ansible.builtin.file:
             path: /shared
             state: directory
             owner: root
@@ -126,13 +131,13 @@
 
         - name: Ensure setfacl and getfacl are installed
           become: yes
-          apt:
+          ansible.builtin.apt:
             name: acl
             state: present
 
         - name: Set group permissions for new files in shared data directory
           become: yes
-          acl:
+          ansible.posix.acl:
             path: /shared
             etype: group
             default: yes
@@ -144,7 +149,7 @@
       block:
         - name: Install PAM OATH packages for TOTP
           become: yes
-          apt:
+          ansible.builtin.apt:
             name:
               - libpam-oath
               - oathtool
@@ -152,7 +157,7 @@
 
         - name: Find users with existing TOTP seeds
           become: yes
-          command: "grep {{ item.username }} /etc/users.oath"
+          ansible.builtin.command: "grep {{ item.username }} /etc/users.oath"
           loop: "{{ users }}"
           register: totp_users
           ignore_errors: yes
@@ -160,7 +165,7 @@
 
         - name: Create TOTP seeds for each user without one
           become: yes
-          lineinfile:
+          ansible.builtin.lineinfile:
             path: /etc/users.oath
             line: "HOTP/T30/6 {{ item.item.username }} - {{ lookup ('password', '/dev/null chars=hexdigits length=30') }}"
             create: yes
@@ -171,7 +176,7 @@
 
         - name: Enable OATH for SSH login in PAM configuration
           become: yes
-          lineinfile:
+          ansible.builtin.lineinfile:
             path: /etc/pam.d/sshd
             state: present
             line: 'auth [success=done new_authtok_reqd=done default=die] pam_oath.so usersfile=/etc/users.oath window=30 digits=6'
@@ -180,7 +185,7 @@
 
         - name: Require OATH for sudo
           become: yes
-          lineinfile:
+          ansible.builtin.lineinfile:
             path: /etc/pam.d/sudo
             state: present
             # nullok is required for users without TOTP configured, e.g. ansible_user
@@ -190,7 +195,7 @@
 
         - name: Register TOTP hashes to a variable
           become: yes
-          shell: sed -E "s:HOTP/T30/6 (\S+) - ([0-9a-fA-F]{30}).*:\1 \2:g" /etc/users.oath
+          ansible.builtin.shell: sed -E "s:HOTP/T30/6 (\S+) - ([0-9a-fA-F]{30}).*:\1 \2:g" /etc/users.oath
           args:
             warn: false
           when: users is defined
@@ -198,7 +203,7 @@
           changed_when: no
 
         - name: Write TOTP hashes to file
-          copy:
+          ansible.builtin.copy:
             content: "{{ totp_hashes.stdout }}"
             dest: ./totp_hashes.txt
             mode: 0644
@@ -207,7 +212,7 @@
       when: totp
 
     - name: Install selected packages
-      apt:
+      ansible.builtin.apt:
         name: "{{ apt_packages }}"
         state: present
         update_cache: yes
