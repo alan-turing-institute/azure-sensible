@@ -155,24 +155,35 @@
               - oathtool
             state: present
 
+        - name: Create TOTP seeds file if it does not exist
+          become: yes
+          ansible.builtin.file:
+            path: /etc/users.oath
+            state: touch
+            owner: root
+            group: root
+            mode: 0600
+            modification_time: preserve
+            access_time: preserve
+
         - name: Find users with existing TOTP seeds
           become: yes
-          ansible.builtin.command: "grep {{ item.username }} /etc/users.oath"
-          loop: "{{ users }}"
-          register: totp_users
-          ignore_errors: yes
+          ansible.builtin.lineinfile:
+            path: /etc/users.oath
+            regexp: '^HOTP/T30/6\s+{{ item.username }}'
+            state: absent
+          check_mode: true
           changed_when: no
+          register: totp_users
+          loop: "{{ users }}"
 
         - name: Create TOTP seeds for each user without one
           become: yes
           ansible.builtin.lineinfile:
             path: /etc/users.oath
             line: "HOTP/T30/6 {{ item.item.username }} - {{ lookup ('password', '/dev/null chars=hexdigits length=30') }}"
-            create: yes
-            owner: root
-            mode: 0600
           loop: "{{ totp_users.results }}"
-          when: item.failed
+          when: item.found == 0
 
         - name: Enable OATH for SSH login in PAM configuration
           become: yes
@@ -195,7 +206,7 @@
 
         - name: Register TOTP hashes to a variable
           become: yes
-          ansible.builtin.shell: sed -E "s:HOTP/T30/6 (\S+) - ([0-9a-fA-F]{30}).*:\1 \2:g" /etc/users.oath
+          ansible.builtin.shell: sed -E "s:HOTP/T30/6\s+(\S+)\s+-\s+([0-9a-fA-F]{30}).*:\1 \2:g" /etc/users.oath
           args:
             warn: false
           when: users is defined
