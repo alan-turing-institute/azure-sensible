@@ -135,6 +135,10 @@ resource "azurerm_managed_disk" "disk" {
   create_option        = "Empty"
   disk_size_gb         = var.data_disk_size_gb
 
+  encryption_settings {
+    enabled = true
+  }
+
   count = var.data_disk_size_gb > 0 ? 1 : 0
 }
 
