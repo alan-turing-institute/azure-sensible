@@ -40,7 +40,8 @@
 # Declare each user as a new list item. Each item has the following keys,
 #   - username: Linux username
 #   - remove: If "yes" the users data (home directory, etc.) will be removed
-#   - force: If "yes" force the removal of user data
+#   - force: If "yes" force the removal (useful if the users is running a
+#            command)
 #
 # Default: []
 #
@@ -48,7 +49,7 @@
 # users_deleted:
 #   - username: harry
 #     remove: no
-#     force: no
+#     force: yes
 
 
 # Ubuntu packages to install.
