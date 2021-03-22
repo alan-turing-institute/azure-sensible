@@ -14,8 +14,10 @@
 #                3. A jinja2 template to fetch key(s) from a file
 #                   "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #              Examples of all three are given below.
-#   - groups: A list of groups to add the user to, add users to the "admin"
-#             group to allow them to use sudo
+#   - groups: A list of groups to add the user to in addition to their default
+#             group, add users to the "admin" group to allow them to use sudo
+#   - append: If "yes" append the user to the groups in the groups list,
+#             otherwise replace all current groups with those in the list
 # Additional keys to configure users can be found here:
 # https://galaxy.ansible.com/singleplatform-eng/users
 #
@@ -31,6 +33,7 @@
 #       - "https://github.com/harrylime.keys"
 #       - "{{ lookup('file', '/home/harry/.ssh/id_rsa.pub') }}"
 #     groups: [admin]
+#     append: yes
 
 # Users to disable or delete
 #
