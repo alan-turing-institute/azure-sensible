@@ -109,3 +109,5 @@ jobs:
         with:
           tfsec_actions_comment: false
           tfsec_actions_working_dir: ./terraform
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
