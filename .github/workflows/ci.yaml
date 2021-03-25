@@ -98,7 +98,7 @@ jobs:
 
   tfsec:
     name: "Check Terraform Security"
-    runs-on: ubuntu-lated
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
