@@ -60,7 +60,7 @@ resource "azurerm_network_security_group" "nsg" {
 
 # Create SSH NSG rule
 resource "azurerm_network_security_rule" "ssh_prefixes" {
-  count = length(var.ssh_addresses) > 1 ? 1: 0
+  count = length(var.ssh_addresses) > 1 ? 1 : 0
 
   name                        = "SSH"
   priority                    = 1001
@@ -76,7 +76,7 @@ resource "azurerm_network_security_rule" "ssh_prefixes" {
 }
 resource "azurerm_network_security_rule" "ssh_prefix" {
   #tfsec:ignore:AZU017
-  count = length(var.ssh_addresses) > 1 ? 0: 1
+  count = length(var.ssh_addresses) > 1 ? 0 : 1
 
   name                        = "SSH"
   priority                    = 1001

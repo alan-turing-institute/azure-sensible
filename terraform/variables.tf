@@ -4,7 +4,7 @@ variable "vm_size" {
 }
 
 variable "ssh_addresses" {
-  type    = list
+  type    = list(string)
   default = ["*"]
 }
 
