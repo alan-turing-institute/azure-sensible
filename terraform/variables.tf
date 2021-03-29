@@ -3,6 +3,11 @@ variable "vm_size" {
   default = "Standard_B2s"
 }
 
+variable "ssh_addresses" {
+  type    = list(string)
+  default = ["*"]
+}
+
 variable "location" {
   type    = string
   default = "eastus"

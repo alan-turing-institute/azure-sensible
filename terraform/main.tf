@@ -59,8 +59,9 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 # Create SSH NSG rule
-resource "azurerm_network_security_rule" "ssh" {
-  #tfsec:ignore:AZU017
+resource "azurerm_network_security_rule" "ssh_prefixes" {
+  count = length(var.ssh_addresses) > 1 ? 1 : 0
+
   name                        = "SSH"
   priority                    = 1001
   direction                   = "Inbound"
@@ -68,7 +69,23 @@ resource "azurerm_network_security_rule" "ssh" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "22"
-  source_address_prefix       = "*" #tfsec:ignore:AZU001
+  source_address_prefixes     = var.ssh_addresses #tfsec:ignore:AZU001
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg.name
+}
+resource "azurerm_network_security_rule" "ssh_prefix" {
+  #tfsec:ignore:AZU017
+  count = length(var.ssh_addresses) > 1 ? 0 : 1
+
+  name                        = "SSH"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = var.ssh_addresses[0] #tfsec:ignore:AZU001
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg.name

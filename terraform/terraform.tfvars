@@ -20,6 +20,21 @@
 # vm_size = "Standard_D8s_v4"
 
 
+# Addresses permitted to connect by SSH
+#
+# Each item of this list can be an IP address, or IP address range in CIDR
+# notation. If (and only if) the list is one element long, you can also use
+# Azure tags such as "VirtualNetwork", "Internet", or "*" (to match any IP).
+#
+# Default = ["*"]
+#
+# Example
+# ssh_addresses = [
+#   "10.0.0.0/16",
+#   "104.20.26.62"
+# ]
+
+
 # Type of storage to use
 #
 # You can find details of the storage types here:
