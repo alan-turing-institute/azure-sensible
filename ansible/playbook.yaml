@@ -9,6 +9,8 @@
 
   vars:
     # Default variables
+    users: []
+    users_deleted: []
     apt_packages: []
     snap_packages: []
     pip_packages: []
@@ -66,9 +68,6 @@
         sshd_authenticationmethods: "{{ ssh_vars.sshd_authenticationmethods[auth] }}"
         ssh_server_match_user: "{{ ssh_vars.ssh_server_match_user[auth] }}"
 
-    - role: singleplatform-eng.users
-      become: yes
-
     - role: geerlingguy.docker
       become: yes
       when: docker
@@ -79,6 +78,33 @@
         pip_install_packages: "{{ pip_packages | union(docker_pip_packages) if docker else pip_packages }}"
 
   tasks:
+    - name: Configure users
+      become: yes
+      block:
+        - name: Create users
+          ansible.builtin.user:
+            name: "{{ item.username }}"
+            comment: "{{ item.name }}"
+            password: "{{ item.password | default(omit) }}"
+            groups: "{{ item.groups | default(omit) }}"
+            append: "{{ item.append | default(omit) }}"
+          loop: "{{ users }}"
+
+        - name: Deploy users SSH keys
+          ansible.posix.authorized_key:
+            user: "{{ item.0.username }}"
+            key: "{{ item.1 }}"
+            exclusive: no
+          loop: "{{ users | subelements('ssh_key') }}"
+
+        - name: Disable or remover users
+          ansible.builtin.user:
+            name: "{{ item.username }}"
+            state: absent
+            force: yes
+            remove: "{{ item.remove | default('no') }}"
+          loop: "{{ users_deleted }}"
+
     - name: Configure data disk
       block:
         - name: Partition disk
