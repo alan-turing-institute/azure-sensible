@@ -65,6 +65,27 @@
 #   - git
 
 
+# Snap packages to install.
+#
+# Each package is a list item. Declare a packages as a dictionary with the
+# following keys,
+#   - name: package name
+#   - classic: if "yes" install the snap will classic confinement
+#
+# You can see packages available as snaps at https://snapcraft.io/. When you
+# select a snap you can click on the green "Install" button to see the snap's name and whether it should use classic confinement.
+#
+# Default: []
+#
+# Example:
+# snap_packages:
+#   - name: lxd
+#   - name: julia
+#     classic: yes
+#   - name: go
+#     classic: yes
+
+
 # Pip packages
 #
 # Each package is a list item.  Declare a package as a dictionary with the
