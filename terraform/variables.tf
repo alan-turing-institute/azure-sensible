@@ -55,3 +55,8 @@ variable "vm_image" {
     version   = "latest"
   }
 }
+
+variable "dsvm" {
+  type    = bool
+  default = false
+}

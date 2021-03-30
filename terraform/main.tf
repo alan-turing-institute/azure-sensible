@@ -13,6 +13,34 @@ provider "azurerm" {
   features {}
 }
 
+# Import standard VM module
+module "vm" {
+  source = "./standard_vm"
+  count  = var.dsvm ? 0 : 1
+
+  prefix              = var.prefix
+  vm_size             = var.vm_size
+  admin_username      = var.admin_username
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  nic_id              = azurerm_network_interface.nic.id
+  public_key_openssh  = tls_private_key.admin.public_key_openssh
+}
+
+# Import Data Science VM module
+module "dsvm" {
+  source = "./data_science_vm"
+  count  = var.dsvm ? 1 : 0
+
+  prefix              = var.prefix
+  vm_size             = var.vm_size
+  admin_username      = var.admin_username
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  nic_id              = azurerm_network_interface.nic.id
+  public_key_openssh  = tls_private_key.admin.public_key_openssh
+}
+
 # Create admin user SSH key
 resource "tls_private_key" "admin" {
   # algorithm   = "ECDSA"
@@ -111,37 +139,6 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# Create a Linux virtual machine
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                  = "${var.prefix}VM"
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic.id]
-  size                  = var.vm_size
-  computer_name         = "${var.prefix}VM"
-  admin_username        = var.admin_username
-
-  disable_password_authentication = true
-
-  admin_ssh_key {
-    username   = var.admin_username
-    public_key = tls_private_key.admin.public_key_openssh
-  }
-
-  os_disk {
-    name                 = "${var.prefix}OsDisk"
-    caching              = "ReadWrite"
-    storage_account_type = var.storage_type
-  }
-
-  source_image_reference {
-    publisher = var.vm_image.publisher
-    offer     = var.vm_image.offer
-    sku       = var.vm_image.sku
-    version   = var.vm_image.version
-  }
-}
-
 # Create a data disk
 resource "azurerm_managed_disk" "disk" {
   name                = "${var.prefix}DataDisk"
@@ -157,8 +154,9 @@ resource "azurerm_managed_disk" "disk" {
 
 # Attach data disk
 resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
+  depends_on         = [module.vm, module.dsvm]
   managed_disk_id    = azurerm_managed_disk.disk[count.index].id
-  virtual_machine_id = azurerm_linux_virtual_machine.vm.id
+  virtual_machine_id = [module.vm.vm_id, module.dsvm.vm_id]
   lun                = "0"
   caching            = "ReadWrite"
 
@@ -168,8 +166,8 @@ resource "azurerm_virtual_machine_data_disk_attachment" "disk" {
 # Register public IP address to write to Ansible inventory
 data "azurerm_public_ip" "ip" {
   name                = azurerm_public_ip.publicip.name
-  resource_group_name = azurerm_linux_virtual_machine.vm.resource_group_name
-  depends_on          = [azurerm_linux_virtual_machine.vm]
+  resource_group_name = azurerm_resource_group.rg.name
+  depends_on          = [module.vm, module.dsvm]
 }
 
 # Print public IP address

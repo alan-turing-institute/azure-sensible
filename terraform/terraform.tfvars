@@ -108,3 +108,13 @@
 #
 # Example
 # admin_username = "sam_spade"
+
+# Use Azure's Data Science image
+# (https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/overview)
+#
+# This will have a common data science toolkit preinstalled
+#
+# Default = false
+#
+# Example
+# dsvm = true
