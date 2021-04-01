@@ -159,7 +159,8 @@ def main():
             module.exit_json(**result)
 
         # Backup existing OATH users file
-        backup_file = module.backup_local(OATH_FILE)
+        if module.params['backup']:
+            backup_file = module.backup_local(OATH_FILE)
 
         # Append the new entry to the OATH users file
         with open(OATH_FILE, 'a') as oath_file:
@@ -194,7 +195,8 @@ def main():
             oath_contents_new[line_number] = user_entry
 
             # Backup existing OATH users file
-            backup_file = module.backup_local(OATH_FILE)
+            if module.params['backup']:
+                backup_file = module.backup_local(OATH_FILE)
 
             # Write OATH users file
             with open(OATH_FILE, "w") as oath_file:
