@@ -153,10 +153,7 @@ def main():
     )
 
     if module.params['state'] == 'absent':
-        if not match:
-            # User is not present and should not be, do nothing
-            result['changed'] = False
-        elif match:
+        if match:
             # User is present and should not be, remove the user entry
             result['changed'] = True
 
@@ -195,10 +192,7 @@ def main():
             with open(OATH_FILE, 'a') as oath_file:
                 oath_file.write(user_entry)
         elif match:
-            if match.group(2) == module.params['seed']:
-                # User is present and seed is consistent, do nothing
-                result['changed'] = False
-            elif match.group(2) != module.params['seed']:
+            if match.group(2) != module.params['seed']:
                 # User is present but seed is not consistent, update user entry
                 if module.params['update_seed'] == 'always':
                     result['changed'] = True
@@ -222,9 +216,6 @@ def main():
                     # Write OATH users file
                     with open(OATH_FILE, "w") as oath_file:
                         oath_file.writelines(oath_contents_new)
-                # Don't update seed
-                else:
-                    result['changed'] = False
 
     if backup_file:
         result['backup_file'] = backup_file
