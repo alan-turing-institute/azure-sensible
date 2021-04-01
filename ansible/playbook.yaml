@@ -225,7 +225,7 @@
 
         - name: Register TOTP secrets to a variable
           become: yes
-          ansible.builtin.shell: sed -E "s:HOTP/T30/6\s+(\S+)\s+-\s+([0-9a-fA-F]+)\s:\1 \2:g" /etc/users.oath
+          ansible.builtin.command: sed -E "s:HOTP/T30/6\s+(\S+)\s+-\s+([0-9a-fA-F]+):\1 \2:g" /etc/users.oath
           args:
             warn: false
           when: users is defined
@@ -238,7 +238,7 @@
             dest: ./totp_hashes.txt
             mode: 0644
           delegate_to: localhost
-          when: users is defined
+          when: totp_hashes is defined
       when: totp
 
     - name: Install apt packages
