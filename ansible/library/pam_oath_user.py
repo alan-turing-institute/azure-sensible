@@ -24,17 +24,17 @@ options:
         required: true
         type: str
         aliases: ['user']
-    seed:
+    secret:
         description:
-            - TOTP seed
+            - TOTP secret
             - Should be a random hexidecimal string of around 40 characters (20
               bytes)
             - See the password plugin
               https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_lookup.html
-              for a method to generate random seeds.
+              for a method to generate random secrets.
         required: true
         type: str
-    update_seed:
+    update_secret:
         description:
             - C(always) will update passwords if they differ.
             - C(on_create) will only set the password for newly created users.
@@ -63,13 +63,13 @@ EXAMPLES = r'''
 - name: Create OATH entry for a user
   pam_oath_user:
     name: harry
-    seed: 2790e8a91e763942ba23cdadd442d064d9ac908d
+    secret: 2790e8a91e763942ba23cdadd442d064d9ac908d
 
-- name: Create OATH entry for a user with a random seed, backing up the
+- name: Create OATH entry for a user with a random secret, backing up the
     original
   pam_oath_user:
     name: sam
-    seed: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
+    secret: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
     backup: yes
 '''  # noqa: 402
 
@@ -99,10 +99,10 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(type='str', required=True, aliases=['user']),
-            seed=dict(type='str', required=True),
-            update_seed=dict(type='str', required=False,
-                             choices=['always', 'on_create'],
-                             default='always'),
+            secret=dict(type='str', required=True),
+            update_secret=dict(type='str', required=False,
+                               choices=['always', 'on_create'],
+                               default='always'),
             state=dict(type='str', required=False,
                        choices=['present', 'absent'],
                        default='present'),
@@ -112,10 +112,10 @@ def main():
     )
 
     # Create a new user entry
-    user_entry = '{token_type} {user} - {seed}\n'.format(
+    user_entry = '{token_type} {user} - {secret}\n'.format(
         token_type=TOKEN_TYPE,
         user=module.params['name'],
-        seed=module.params['seed']
+        secret=module.params['secret']
     )
 
     # Seed the result dict in the object
@@ -123,7 +123,7 @@ def main():
         changed=False,
         name=module.params['name'],
         state=module.params['state'],
-        seed='NOT_LOGGING_SEED'
+        secret='NOT_LOGGING_SECRET'
     )
 
     # Ensure that OATH file exists
@@ -157,7 +157,7 @@ def main():
     match = pattern.search(
         oath_contents
     )
-    current_seed = match.group(2)
+    current_secret = match.group(2)
 
     if module.params['state'] == 'absent':
         if match:
@@ -196,9 +196,10 @@ def main():
             with open(OATH_FILE, 'a') as oath_file:
                 oath_file.write(user_entry)
         elif match:
-            if (current_seed != module.params['seed'] and
-                    module.params['update_seed'] == 'always'):
-                # User is present but seed is not consistent, update user entry
+            if (current_secret != module.params['secret'] and
+                    module.params['update_secret'] == 'always'):
+                # User is present but secret is not consistent, update user
+                # entry
                 result['changed'] = True
 
                 if module.check_mode:

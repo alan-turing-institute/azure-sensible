@@ -184,7 +184,7 @@
               - oathtool
             state: present
 
-        - name: Create TOTP seeds file if it does not exist
+        - name: Create OATH users file if it does not exist
           become: yes
           ansible.builtin.file:
             path: /etc/users.oath
@@ -195,13 +195,13 @@
             modification_time: preserve
             access_time: preserve
 
-        - name: Configure TOTP seeds
+        - name: Configure OATH entries for users
           become: yes
           pam_oath_user:
             name: "{{ item.username }}"
-            seed: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
+            secret: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
             state: present
-            update_seed: on_create
+            update_secret: on_create
           loop: "{{ users }}"
 
         - name: Enable OATH for SSH login in PAM configuration
@@ -223,7 +223,7 @@
             insertbefore: BOF
             mode: 0644
 
-        - name: Register TOTP hashes to a variable
+        - name: Register TOTP secrets to a variable
           become: yes
           ansible.builtin.shell: sed -E "s:HOTP/T30/6\s+(\S+)\s+-\s+([0-9a-fA-F]+)\s:\1 \2:g" /etc/users.oath
           args:
@@ -232,7 +232,7 @@
           register: totp_hashes
           changed_when: no
 
-        - name: Write TOTP hashes to file
+        - name: Write TOTP secrets to file
           ansible.builtin.copy:
             content: "{{ totp_hashes.stdout }}"
             dest: ./totp_hashes.txt
