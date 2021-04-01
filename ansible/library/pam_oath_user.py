@@ -75,8 +75,23 @@ EXAMPLES = r'''
 
 RETURN = r'''
 name:
+    description: User account name
+    returned: always
+    type: str
+    sample: 'harry'
+secret:
+    description: Masked value of the users OATH secret
+    returned: always
+    type: str
+    sample: 'NOT_LOGGING_SECRET'
 state:
+    description: Whether the user's OATH entry should exist or not
+    returned: always
+    type: str
+    sample: 'present'
 backup_file:
+    description: Path to the backup of the previous OATH users file
+    returned: When I(backup) is C(True)
 '''
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: 402
