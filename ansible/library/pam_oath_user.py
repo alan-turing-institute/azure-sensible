@@ -63,20 +63,20 @@ EXAMPLES = r'''
 - name: Create OATH entry for a user
   pam_oath_user:
     name: harry
-    seed: 5051fDac4C63eC227AeDeeAa7A3aA2b32Ccb54bC
+    seed: 2790e8a91e763942ba23cdadd442d064d9ac908d
 
 - name: Create OATH entry for a user with a random seed, backing up the
     original
   pam_oath_user:
     name: sam
-    seed: "{{ lookup('password', '/dev/null chars=hexdigits length=40') }}"
+    seed: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
     backup: yes
 '''
 
 RETURN = r'''
 name:
 seed:
-backup_file
+backup_file:
 '''
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: 402
@@ -116,7 +116,7 @@ def main():
     result = dict(
         changed=False,
         name=module.params['name'],
-        seed=module.params['seed']
+        seed='NOT_LOGGING_SEED'
     )
 
     # Ensure that OATH file exists

@@ -199,9 +199,10 @@
           become: yes
           pam_oath_user:
             name: "{{ item.username }}"
-            seed: c4C63eC227AeDeeAa7A3aA2b32Ccb54bA
+            seed: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
             state: present
-            update_seed: on_create
+            update_seed: always
+            backup: yes
           loop: "{{ users }}"
 
         - name: Enable OATH for SSH login in PAM configuration
