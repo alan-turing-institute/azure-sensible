@@ -75,7 +75,7 @@ EXAMPLES = r'''
 
 RETURN = r'''
 name:
-seed:
+state:
 backup_file:
 '''
 
@@ -116,6 +116,7 @@ def main():
     result = dict(
         changed=False,
         name=module.params['name'],
+        state=module.params['state'],
         seed='NOT_LOGGING_SEED'
     )
 
@@ -151,35 +152,12 @@ def main():
         oath_contents
     )
 
-    # User is not present and should be
-    if not match and module.params['state'] == 'present':
-        result['changed'] = True
-
-        if module.check_mode:
-            module.exit_json(**result)
-
-        # Backup existing OATH users file
-        if module.params['backup']:
-            backup_file = module.backup_local(OATH_FILE)
-
-        # Append the new entry to the OATH users file
-        with open(OATH_FILE, 'a') as oath_file:
-            oath_file.write(user_entry)
-
-    # User is not present and should not be
-    if not match and module.params['state'] == 'absent':
-        result['changed'] = False
-
-    # User is present and seed is consistent
-    if match and match.group(2) == module.params['seed']:
-        # raise Exception("\t".join([match.group(2), module.params['seed']]))
-        result['changed'] = False
-
-    # User is present but seed is not consistent
-    if match and match.group(2) != module.params['seed']:
-        # raise Exception("\t".join([match.group(2), module.params['seed']]))
-        # Update seed
-        if module.params['update_seed'] == 'always':
+    if module.params['state'] == 'absent':
+        if not match:
+            # User is not present and should not be, do nothing
+            result['changed'] = False
+        elif match:
+            # User is present and should not be, remove the user entry
             result['changed'] = True
 
             if module.check_mode:
@@ -191,8 +169,8 @@ def main():
                 if pattern.match(line):
                     break
 
-            # Replace line
-            oath_contents_new[line_number] = user_entry
+            # Remove line
+            oath_contents_new.pop(line_number)
 
             # Backup existing OATH users file
             if module.params['backup']:
@@ -201,9 +179,52 @@ def main():
             # Write OATH users file
             with open(OATH_FILE, "w") as oath_file:
                 oath_file.writelines(oath_contents_new)
-        # Don't update seed
-        else:
-            result['changed'] = False
+    elif module.params['state'] == 'present':
+        if not match:
+            # User is not present and should be, add a user entry
+            result['changed'] = True
+
+            if module.check_mode:
+                module.exit_json(**result)
+
+            # Backup existing OATH users file
+            if module.params['backup']:
+                backup_file = module.backup_local(OATH_FILE)
+
+            # Append the new entry to the OATH users file
+            with open(OATH_FILE, 'a') as oath_file:
+                oath_file.write(user_entry)
+        elif match:
+            if match.group(2) == module.params['seed']:
+                # User is present and seed is consistent, do nothing
+                result['changed'] = False
+            elif match.group(2) != module.params['seed']:
+                # User is present but seed is not consistent, update user entry
+                if module.params['update_seed'] == 'always':
+                    result['changed'] = True
+
+                    if module.check_mode:
+                        module.exit_json(**result)
+
+                    # Find line number of existing entry
+                    oath_contents_new = oath_contents.splitlines()
+                    for line_number, line in enumerate(oath_contents_new):
+                        if pattern.match(line):
+                            break
+
+                    # Replace line
+                    oath_contents_new[line_number] = user_entry
+
+                    # Backup existing OATH users file
+                    if module.params['backup']:
+                        backup_file = module.backup_local(OATH_FILE)
+
+                    # Write OATH users file
+                    with open(OATH_FILE, "w") as oath_file:
+                        oath_file.writelines(oath_contents_new)
+                # Don't update seed
+                else:
+                    result['changed'] = False
 
     if backup_file:
         result['backup_file'] = backup_file
