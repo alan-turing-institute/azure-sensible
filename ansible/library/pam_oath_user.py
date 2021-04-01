@@ -85,6 +85,12 @@ from pathlib import Path  # noqa: 402
 import re  # noqa: 402
 
 
+def match_line_number(pattern, lines):
+    for line_number, line in enumerate(lines):
+        if pattern.match(line):
+            return line_number
+
+
 def main():
     OATH_FILE = '/etc/users.oath'
     TOKEN_TYPE = 'HOTP/T30/6'
@@ -151,6 +157,7 @@ def main():
     match = pattern.search(
         oath_contents
     )
+    current_seed = match.group(2)
 
     if module.params['state'] == 'absent':
         if match:
@@ -160,14 +167,11 @@ def main():
             if module.check_mode:
                 module.exit_json(**result)
 
-            # Find line number of existing entry
+            # Remove existing entry
             oath_contents_new = oath_contents.splitlines()
-            for line_number, line in enumerate(oath_contents_new):
-                if pattern.match(line):
-                    break
-
-            # Remove line
-            oath_contents_new.pop(line_number)
+            oath_contents_new.pop(
+                match_line_number(pattern, oath_contents_new)
+            )
 
             # Backup existing OATH users file
             if module.params['backup']:
@@ -192,30 +196,27 @@ def main():
             with open(OATH_FILE, 'a') as oath_file:
                 oath_file.write(user_entry)
         elif match:
-            if match.group(2) != module.params['seed']:
+            if (current_seed != module.params['seed'] and
+                    module.params['update_seed'] == 'always'):
                 # User is present but seed is not consistent, update user entry
-                if module.params['update_seed'] == 'always':
-                    result['changed'] = True
+                result['changed'] = True
 
-                    if module.check_mode:
-                        module.exit_json(**result)
+                if module.check_mode:
+                    module.exit_json(**result)
 
-                    # Find line number of existing entry
-                    oath_contents_new = oath_contents.splitlines()
-                    for line_number, line in enumerate(oath_contents_new):
-                        if pattern.match(line):
-                            break
+                # Replace existing entry
+                oath_contents_new = oath_contents.splitlines()
+                oath_contents_new[
+                    match_line_number(pattern, oath_contents_new)
+                ] = user_entry
 
-                    # Replace line
-                    oath_contents_new[line_number] = user_entry
+                # Backup existing OATH users file
+                if module.params['backup']:
+                    backup_file = module.backup_local(OATH_FILE)
 
-                    # Backup existing OATH users file
-                    if module.params['backup']:
-                        backup_file = module.backup_local(OATH_FILE)
-
-                    # Write OATH users file
-                    with open(OATH_FILE, "w") as oath_file:
-                        oath_file.writelines(oath_contents_new)
+                # Write OATH users file
+                with open(OATH_FILE, "w") as oath_file:
+                    oath_file.writelines(oath_contents_new)
 
     if backup_file:
         result['backup_file'] = backup_file
