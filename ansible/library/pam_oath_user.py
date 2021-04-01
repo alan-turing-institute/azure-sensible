@@ -71,7 +71,7 @@ EXAMPLES = r'''
     name: sam
     seed: "{{ lookup('password', '/dev/null chars=0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f length=40') }}"
     backup: yes
-'''
+'''  # noqa: 402
 
 RETURN = r'''
 name:
