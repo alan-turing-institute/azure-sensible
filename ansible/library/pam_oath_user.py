@@ -237,10 +237,6 @@ def main():
     if backup_file:
         result['backup_file'] = backup_file
 
-    # Catch check mode when no changes have occurred
-    if module.check_mode:
-        module.exit_json(**result)
-
     # Catch success
     module.exit_json(**result)
 
