@@ -52,7 +52,7 @@ def main():
             check=True,
         )
         base32_secret = re.search(
-            r"^Base32 secret: ([A-Z0-9]{24})$", result.stdout, re.MULTILINE
+            r"^Base32 secret: ([A-Z0-9]+)$", result.stdout, re.MULTILINE
         ).group(1)
 
         # Generate a QR code for each user
