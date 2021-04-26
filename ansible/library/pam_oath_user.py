@@ -172,7 +172,6 @@ def main():
     match = pattern.search(
         oath_contents
     )
-    current_secret = match.group(2)
 
     if module.params['state'] == 'absent':
         if match:
@@ -211,6 +210,7 @@ def main():
             with open(OATH_FILE, 'a') as oath_file:
                 oath_file.write(user_entry)
         elif match:
+            current_secret = match.group(2)
             if (current_secret != module.params['secret'] and
                     module.params['update_secret'] == 'always'):
                 # User is present but secret is not consistent, update user
